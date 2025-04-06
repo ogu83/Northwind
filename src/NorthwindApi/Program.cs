@@ -1,4 +1,6 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using NorthwindApi;
 using NorthwindApi.DbModels;
 using NorthwindApi.Providers;
@@ -15,7 +17,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Add Swagger to the container
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c=>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "This is Northwind API",
+        Version = "v1",
+        Description = "This an .NET 9.0 WEB API for Northwind Database"
+    });
+
+    // Set the comments path for the Swagger JSON and UI.
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 // Add Mappers to the container
 builder.Services.AddAutoMapper(typeof(MappingProfile));

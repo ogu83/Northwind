@@ -7,9 +7,9 @@ namespace NorthwindApi.Controllers;
 public class ProductController(IProductService productService) : ApiControllerBase
 {
     [HttpGet]
-    public IEnumerable<Product> GetByCategory(int categoryId)
+    public async Task<IEnumerable<Product>> GetByCategory(int categoryId)
     {
-        var retVal = productService.GetProductsByCategoryId(categoryId);
+        var retVal = await productService.GetProductsByCategoryIdAsync(categoryId);
         return retVal;
     }
 }

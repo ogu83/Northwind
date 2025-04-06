@@ -4,5 +4,5 @@ namespace NorthwindApi.Services;
 
 public interface IProductService
 {
-    List<Product> GetProductsByCategoryId(int categoryId);
+    Task<List<Product>> GetProductsByCategoryIdAsync(int categoryId);
 }

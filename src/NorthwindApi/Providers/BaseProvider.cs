@@ -1,5 +1,6 @@
 
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using NorthwindApi.DbModels;
 
 namespace NorthwindApi.Providers;
@@ -22,7 +23,7 @@ public abstract class BaseProvider<T>(InstnwndContext context) where T: class
         return q.Skip(skip).Take(take);
     }
 
-    public virtual T? GetById(int id) => Query().FirstOrDefault();
+    public virtual Task<T?> GetByIdAsync(int id) => Query().FirstOrDefaultAsync();
     
     public virtual async Task<T?> FindAsync(int id)
     {

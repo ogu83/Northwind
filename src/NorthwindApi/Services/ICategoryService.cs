@@ -4,5 +4,7 @@ namespace NorthwindApi.Services;
 
 public interface ICategoryService
 {
-    List<Category> GetCategoryList();
+    Task<List<Category>> GetCategoryListAsync();
+
+    Task<byte[]?> GetPictureAsync(int id);
 }

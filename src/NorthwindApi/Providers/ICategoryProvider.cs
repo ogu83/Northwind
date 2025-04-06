@@ -4,5 +4,6 @@ namespace NorthwindApi.Providers;
 
 public interface ICategoryProvider
 {
-    List<Category> GetList();
+    Task<List<Category>> GetListAsync();
+    Task<Category?> GetByIdAsync(int id);
 }

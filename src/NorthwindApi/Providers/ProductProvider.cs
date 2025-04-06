@@ -1,14 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using NorthwindApi.DbModels;
 
 namespace NorthwindApi.Providers;
 
 public class ProductProvider(InstnwndContext context): BaseProvider<Product>(context), IProductProvider
 {
-    public List<Product> GetList() => [.. Query()];
+    public Task<List<Product>> GetListAsync() => Query().ToListAsync();
 
-    public List<Product> GetListByCategoryId(int categoryId)
+    public Task<List<Product>> GetListByCategoryIdAsync(int categoryId)
     {
-        var retval = Query().Where(x=>x.CategoryId == categoryId).ToList();
+        var retval = Query().Where(x=>x.CategoryId == categoryId).ToListAsync();
         return retval;
     }
 
