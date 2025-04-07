@@ -9,6 +9,9 @@ public abstract class BaseProvider<T>(InstnwndContext context) where T: class
 {
     protected readonly InstnwndContext _context = context;
     protected virtual IQueryable<T> Query() => _context.Set<T>();
+
+    public virtual Task<List<T>> GetListAsync() => Query().ToListAsync();
+
     public virtual IQueryable<T> GetValues(int skip, int take, Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>? orderBy = null)
     {
         var q = Query();
@@ -24,6 +27,8 @@ public abstract class BaseProvider<T>(InstnwndContext context) where T: class
     }
 
     public virtual Task<T?> GetByIdAsync(int id) => Query().FirstOrDefaultAsync();
+
+    public virtual Task<T?> GetByIdAsync(string id) => Query().FirstOrDefaultAsync();
     
     public virtual async Task<T?> FindAsync(int id)
     {

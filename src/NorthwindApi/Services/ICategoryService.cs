@@ -2,9 +2,7 @@ using NorthwindApi.Models;
 
 namespace NorthwindApi.Services;
 
-public interface ICategoryService
+public interface ICategoryService : IBaseService<Category>
 {
-    Task<List<Category>> GetCategoryListAsync();
-
     Task<byte[]?> GetPictureAsync(int id);
 }

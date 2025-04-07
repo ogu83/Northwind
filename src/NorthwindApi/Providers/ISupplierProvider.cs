@@ -2,6 +2,7 @@ using NorthwindApi.DbModels;
 
 namespace NorthwindApi.Providers;
 
-public interface ICategoryProvider : IBaseProvider<Category>
+public interface ISupplierProvider : IBaseProvider<Supplier>
 {
-}
+
+} 

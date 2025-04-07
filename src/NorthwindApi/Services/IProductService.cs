@@ -2,7 +2,7 @@ using NorthwindApi.Models;
 
 namespace NorthwindApi.Services;
 
-public interface IProductService
+public interface IProductService : IBaseService<Product>
 {
-    Task<List<Product>> GetProductsByCategoryIdAsync(int categoryId);
+    Task<List<Product>> GetListByCategoryAsync(int categoryId);
 }

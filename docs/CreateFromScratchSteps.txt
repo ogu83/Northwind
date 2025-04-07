@@ -4,5 +4,5 @@ dotnet new webapi -n NorthwindApi
 cd NorthwindApi
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 dotnet add package Microsoft.EntityFrameworkCore.Design
-dotnet ef dbcontext scaffold "Server=localhost;Database=instnwnd;User Id=sa;Password=MsSql2839*;MultipleActiveResultSets=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o DbModels
+dotnet ef dbcontext scaffold "Server=localhost;Database=instnwnd;Integrated Security=True;MultipleActiveResultSets=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o DbModels
 dotnet add package AutoMapper

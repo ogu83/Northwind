@@ -38,10 +38,15 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Add Providers to the container
 builder.Services.AddTransient<IProductProvider, ProductProvider>();
 builder.Services.AddTransient<ICategoryProvider, CategoryProvider>();
+builder.Services.AddTransient<ICustomerProvider, CustomerProvider>();
+builder.Services.AddTransient<ISupplierProvider, SupplierProvider>();
+builder.Services.AddTransient<IOrderProvider, OrderProvider>();
+builder.Services.AddTransient<IOrderDetailsProvider, OrderDetailsProvider>();
 
 // Add services to the container.
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
