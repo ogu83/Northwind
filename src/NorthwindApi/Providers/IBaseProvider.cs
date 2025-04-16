@@ -1,7 +1,7 @@
 namespace NorthwindApi.Providers;
 
-public interface IBaseProvider<T>
+public interface IBaseProvider<T, IDT>
 {
-    Task<T?> GetByIdAsync(int id);
+    Task<T?> GetByIdAsync(IDT id);
     Task<List<T>> GetListAsync();
 }

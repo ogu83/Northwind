@@ -5,7 +5,7 @@ using NorthwindApi.Providers;
 namespace NorthwindApi.Services;
 
 public class SupplierService(IMapper mapper, ISupplierProvider supplierProvider)
-    : BaseService<Supplier, DbModels.Supplier>(mapper, supplierProvider), ISupplierService
+    : BaseService<Supplier, DbModels.Supplier, int>(mapper, supplierProvider), ISupplierService
 {
     
 }

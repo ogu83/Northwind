@@ -5,7 +5,7 @@ using NorthwindApi.Providers;
 namespace NorthwindApi.Services;
 
 public class ProductService(IMapper mapper, IProductProvider productProvider)
-    : BaseService<Product, DbModels.Product>(mapper, productProvider), IProductService
+    : BaseService<Product, DbModels.Product, int>(mapper, productProvider), IProductService
 {
     public async Task<List<Product>> GetListByCategoryAsync(int categoryId)
     {

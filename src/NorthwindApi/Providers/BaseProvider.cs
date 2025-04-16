@@ -1,13 +1,15 @@
-
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NorthwindApi.DbModels;
 
 namespace NorthwindApi.Providers;
 
-public abstract class BaseProvider<T>(InstnwndContext context) where T: class
+public abstract class BaseProvider<T, IDT>(InstnwndContext context) 
+    : IBaseProvider<T, IDT> 
+    where T: class
 {
     protected readonly InstnwndContext _context = context;
+    
     protected virtual IQueryable<T> Query() => _context.Set<T>();
 
     public virtual Task<List<T>> GetListAsync() => Query().ToListAsync();
@@ -26,9 +28,7 @@ public abstract class BaseProvider<T>(InstnwndContext context) where T: class
         return q.Skip(skip).Take(take);
     }
 
-    public virtual Task<T?> GetByIdAsync(int id) => Query().FirstOrDefaultAsync();
-
-    public virtual Task<T?> GetByIdAsync(string id) => Query().FirstOrDefaultAsync();
+    public virtual Task<T?> GetByIdAsync(IDT id) => Query().FirstOrDefaultAsync();
     
     public virtual async Task<T?> FindAsync(int id)
     {

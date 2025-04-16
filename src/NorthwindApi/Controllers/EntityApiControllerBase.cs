@@ -3,13 +3,13 @@ using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public abstract class EntityApiControllerBase<T,S> : ApiControllerBase 
+public abstract class EntityApiControllerBase<T, S, IDT> : ApiControllerBase 
     where T: class 
-    where S: IBaseService<T> 
+    where S: IBaseService<T, IDT> 
 {
-    private readonly IBaseService<T> _service;
+    private readonly IBaseService<T, IDT> _service;
 
-    protected EntityApiControllerBase(IBaseService<T> service)
+    protected EntityApiControllerBase(IBaseService<T, IDT> service)
     {
         _service = service;
     }
@@ -30,5 +30,14 @@ public abstract class EntityApiControllerBase<T,S> : ApiControllerBase
             return new ActionResult<IEnumerable<T>>(retVal);
         else
             return new NotFoundResult();
+    }
+
+    [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<T>> Get(IDT id)
+    {
+        var retVal = await _service.GetById(id);
+        return new ActionResult<T>(retVal);
     }
 }

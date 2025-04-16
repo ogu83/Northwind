@@ -5,7 +5,7 @@ using NorthwindApi.Services;
 namespace NorthwindApi.Controllers;
 
 public class CategoryController(ICategoryService categoryService) 
-    : EntityApiControllerBase<Category, ICategoryService>(categoryService)
+    : EntityApiControllerBase<Category, ICategoryService, int>(categoryService)
 {
     [HttpGet("Picture/{id}")]
     public async Task<IActionResult> GetPicture(int id)

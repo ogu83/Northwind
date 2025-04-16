@@ -5,7 +5,7 @@ using NorthwindApi.Providers;
 namespace NorthwindApi.Services;
 
 public class CategoryService(IMapper mapper, ICategoryProvider categoryProvider) 
-    : BaseService<Category, DbModels.Category>(mapper,categoryProvider), ICategoryService
+    : BaseService<Category, DbModels.Category, int>(mapper, categoryProvider), ICategoryService
 {
     public async Task<byte[]?> GetPictureAsync(int id)
     {

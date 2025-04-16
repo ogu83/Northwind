@@ -48,7 +48,7 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
-builder.Services.AddTransient<IOrderDetailsService, OrderDetailsService>();
+builder.Services.AddTransient<IOrderDetailService, OrderDetailService>();
 builder.Services.AddTransient<ISupplierService, SupplierService>();
 
 //Build the app

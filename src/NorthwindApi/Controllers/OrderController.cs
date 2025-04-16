@@ -5,7 +5,7 @@ using NorthwindApi.Services;
 namespace NorthwindApi.Controllers;
 
 public class OrderController(IOrderService orderService)
-    : EntityApiControllerBase<Order, IOrderService>(orderService)
+    : EntityApiControllerBase<Order, IOrderService, int>(orderService)
 {
     [HttpGet("Customer/{id}")]
     public async Task<ActionResult<IEnumerable<Order>>> GetByCustomer(string id)

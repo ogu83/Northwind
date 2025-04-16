@@ -4,8 +4,8 @@ using NorthwindApi.Providers;
 
 namespace NorthwindApi.Services;
 
-public class OrderDetailsService(IMapper mapper, IOrderDetailsProvider orderDetailsProvider)
-    : BaseService<OrderDetail, DbModels.OrderDetail>(mapper, orderDetailsProvider), IOrderDetailsService
+public class OrderDetailService(IMapper mapper, IOrderDetailsProvider orderDetailsProvider)
+    : BaseService<OrderDetail, DbModels.OrderDetail, int>(mapper, orderDetailsProvider), IOrderDetailService
 {
     public async Task<List<OrderDetail>> GetByOrder(int orderId)
     {

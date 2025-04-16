@@ -5,7 +5,7 @@ using NorthwindApi.Services;
 namespace NorthwindApi.Controllers;
 
 public class ProductController(IProductService productService)
-    : EntityApiControllerBase<Product, IProductService>(productService)
+    : EntityApiControllerBase<Product, IProductService, int>(productService)
 {
     [HttpGet("Category/{id}")]
     public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(int id)
