@@ -7,10 +7,17 @@ namespace NorthwindApi.Controllers;
 public class ProductController(IProductService productService)
     : EntityApiControllerBase<Product, IProductService>(productService)
 {
-    [HttpGet("ByCategory/{id}")]
-    public async Task<IEnumerable<Product>> GetByCategory(int id)
+    [HttpGet("Category/{id}")]
+    public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(int id)
     {
         var retVal = await productService.GetListByCategoryAsync(id);
+        return retVal;
+    }
+
+    [HttpGet("Supplier/{id}")]
+    public async Task<ActionResult<IEnumerable<Product>>> GetBySupplier(int id)
+    {
+        var retVal = await productService.GetListBySupplier(id);
         return retVal;
     }
 }

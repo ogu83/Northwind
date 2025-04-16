@@ -13,4 +13,11 @@ public class ProductService(IMapper mapper, IProductProvider productProvider)
         var retVal = _mapper.Map<List<Product>>(dbObj);
         return retVal;
     }
+
+    public async Task<List<Product>> GetListBySupplier(int supplierId)
+    {
+        var dbObj = await productProvider.GetListBySupplierIdAsync(supplierId);
+        var retVal = _mapper.Map<List<Product>>(dbObj);
+        return retVal;
+    }
 }

@@ -39,15 +39,19 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddTransient<IProductProvider, ProductProvider>();
 builder.Services.AddTransient<ICategoryProvider, CategoryProvider>();
 builder.Services.AddTransient<ICustomerProvider, CustomerProvider>();
-builder.Services.AddTransient<ISupplierProvider, SupplierProvider>();
 builder.Services.AddTransient<IOrderProvider, OrderProvider>();
 builder.Services.AddTransient<IOrderDetailsProvider, OrderDetailsProvider>();
+builder.Services.AddTransient<ISupplierProvider, SupplierProvider>();
 
 // Add services to the container.
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IOrderDetailsService, OrderDetailsService>();
+builder.Services.AddTransient<ISupplierService, SupplierService>();
 
+//Build the app
 var app = builder.Build();
 
 app.UseSwagger();
