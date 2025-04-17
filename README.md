@@ -8,7 +8,13 @@ This is a .NET 9.0 Migration Example.
 ## Northwind REST WEB Api
 
 ### VS Code Debug Options:
-tasks.json:
+It will run in local chrome browser 
+- either with SSL at the link https://localhost:7251/swagger/index.html
+- or without SSL at the link http://localhost:5205/swagger/index.html
+
+To make it run like this please add fallowing two files under the ```\src\NorthwindApi\.vscode``` folde.
+
+**tasks.json:**
 ```json
 {
   "version": "2.0.0",
@@ -30,7 +36,7 @@ tasks.json:
   ]
 }
 ```
-
+**launch.json**
 ```json
 {
     "version": "0.2.0",
