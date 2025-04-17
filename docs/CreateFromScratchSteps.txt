@@ -1,3 +1,5 @@
+BACKEND
+---------------------------------------
 mkdir Northwind
 cd Northwind
 dotnet new webapi -n NorthwindApi
@@ -6,3 +8,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 dotnet add package Microsoft.EntityFrameworkCore.Design
 dotnet ef dbcontext scaffold "Server=localhost;Database=instnwnd;Integrated Security=True;MultipleActiveResultSets=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o DbModels
 dotnet add package AutoMapper
+
+FRONTEND
+---------------------------------------
+npx create-next-app@latest northwind-frontend
