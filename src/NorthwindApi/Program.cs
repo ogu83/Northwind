@@ -12,6 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<InstnwndContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("InstnwndConn")));
 
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowNextJsFrontend",
+        policy => policy.WithOrigins("http://localhost:5206", "https://localhost:7252")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
+
 // Add Controllers to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -54,6 +63,7 @@ builder.Services.AddTransient<ISupplierService, SupplierService>();
 //Build the app
 var app = builder.Build();
 
+app.UseCors("AllowNextJsFrontend");
 app.UseSwagger();
 app.UseSwaggerUI(c=>
 {
