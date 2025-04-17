@@ -13,4 +13,6 @@ public interface IBaseService<T, IDT>
     Task<List<T>> GetListAsync();
     Task<T> GetById(IDT id);
     Task<T> Update(T obj);
+    Task<T> Add(T obj);
+    Task Delete(IDT id);
 }

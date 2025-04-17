@@ -13,4 +13,6 @@ public interface IBaseProvider<T, IDT>
     Task<T> AddAndSaveAsync(T entity);
     T Update(T entity);
     Task<T> UpdateAndSaveAsync(T entity);
+    Task Delete(IDT id);
+    Task DeleteAndSaveAsync(IDT id);
 }
