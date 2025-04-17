@@ -1,6 +1,6 @@
 namespace NorthwindApi.Models;
 
-public class Product
+public class Product : BaseModel
 {
     public int ProductId { get; set; }
 

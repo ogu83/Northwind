@@ -1,6 +1,6 @@
 namespace NorthwindApi.Models;
 
-public partial class Customer
+public partial class Customer : BaseModel
 {
     public string CustomerId { get; set; } = null!;
 

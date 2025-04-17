@@ -1,6 +1,6 @@
 namespace NorthwindApi.Models;
 
-public class Category
+public class Category : BaseModel
 {
     public int CategoryId { get; set; }
 

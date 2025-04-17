@@ -4,6 +4,12 @@ using NorthwindApi.DbModels;
 
 namespace NorthwindApi.Providers;
 
+/// <summary>
+/// Base Provider Class for the Data Base Providers
+/// </summary>
+/// <typeparam name="T">Entity Type</typeparam>
+/// <typeparam name="IDT">Primary Key Type</typeparam>
+/// <param name="context">Database Context</param>
 public abstract class BaseProvider<T, IDT>(InstnwndContext context) 
     : IBaseProvider<T, IDT> 
     where T: class
@@ -42,13 +48,20 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
         return res.Entity;
     }
 
+    public virtual async Task<T> AddAndSaveAsync(T entity)
+    {
+        entity = await AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+
     public virtual T Update(T entity)
     {
         var res = _context.Set<T>().Update(entity);
         return res.Entity;
     }
 
-    public virtual async Task<T> UpdateAndSave(T entity)
+    public virtual async Task<T> UpdateAndSaveAsync(T entity)
     {
         entity = Update(entity);
         await _context.SaveChangesAsync();

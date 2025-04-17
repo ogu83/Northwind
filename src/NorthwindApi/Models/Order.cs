@@ -1,6 +1,6 @@
 namespace NorthwindApi.Models;
 
-public class Order
+public class Order : BaseModel
 {
     public int OrderId { get; set; }
 

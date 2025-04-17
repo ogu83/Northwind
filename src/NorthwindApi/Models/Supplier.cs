@@ -1,6 +1,6 @@
 namespace NorthwindApi.Models;
 
-public class Supplier
+public class Supplier : BaseModel
 {
     public int SupplierId { get; set; }
 
