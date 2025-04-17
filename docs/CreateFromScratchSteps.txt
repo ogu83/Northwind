@@ -11,4 +11,9 @@ dotnet add package AutoMapper
 
 FRONTEND
 ---------------------------------------
+Run this command to quickly set up a Next.js application:
 npx create-next-app@latest northwind-frontend
+cd northwind-frontend
+
+You need Axios for fetching data and a component library (optional but recommended). For simplicity, let's use shadcn/ui and Axios.
+npm install axios @tanstack/react-query @shadcn/ui tailwindcss
