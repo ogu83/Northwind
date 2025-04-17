@@ -60,4 +60,32 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
             return NotFound();
         return new ActionResult<T>(retVal);
     }
+
+    /// <summary>
+    /// Create the element
+    /// </summary>
+    /// <param name="obj">Element to be created</param>
+    /// <returns>Created Element</returns>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<T>> Post(T obj)
+    {
+        var retVal = await _service.Add(obj);
+        if (retVal == null)
+            return NotFound();
+        return new ActionResult<T>(retVal);
+    }
+
+    /// <summary>
+    /// Deletes an element
+    /// </summary>
+    /// <param name="id">Id of the element to be deleted</param>
+    /// <returns>Ok if Element has been deleted</returns>
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> Delete(IDT id)
+    {
+        await _service.Delete(id);
+        return Ok();
+    }
 }

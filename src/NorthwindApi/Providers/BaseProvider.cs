@@ -67,4 +67,17 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
         await _context.SaveChangesAsync();
         return entity;
     }
+
+    public virtual async Task Delete(IDT id)
+    {
+        var entity = await FindAsync(id);
+        if (entity is not null)
+            _context.Remove(entity);
+    }
+
+    public virtual async Task DeleteAndSaveAsync(IDT id)
+    {
+        await Delete(id);
+        await _context.SaveChangesAsync();
+    }
 }

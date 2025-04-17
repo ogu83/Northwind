@@ -34,4 +34,17 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         var retVal = _mapper.Map<T>(dbObj);
         return retVal;
     }
+
+    public async Task<T> Add(T obj)
+    {
+        var dbObj = _mapper.Map<DBT>(obj);
+        dbObj = await _provider.AddAndSaveAsync(dbObj);
+        var retVal = _mapper.Map<T>(dbObj);
+        return retVal;
+    }
+
+    public async Task Delete(IDT id)
+    {
+        await _provider.DeleteAndSaveAsync(id);
+    }
 }
