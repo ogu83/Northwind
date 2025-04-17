@@ -28,9 +28,9 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
         return q.Skip(skip).Take(take);
     }
 
-    public virtual Task<T?> GetByIdAsync(IDT id) => Query().FirstOrDefaultAsync();
+    public virtual Task<T?> GetByIdAsync(IDT id) => FindAsync(id);
     
-    public virtual async Task<T?> FindAsync(int id)
+    private  async Task<T?> FindAsync(IDT id)
     {
         var result = await _context.Set<T>().FindAsync(id);
         return result;
@@ -46,5 +46,12 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
     {
         var res = _context.Set<T>().Update(entity);
         return res.Entity;
+    }
+
+    public virtual async Task<T> UpdateAndSave(T entity)
+    {
+        entity = Update(entity);
+        await _context.SaveChangesAsync();
+        return entity;
     }
 }

@@ -4,4 +4,5 @@ public interface IBaseProvider<T, IDT>
 {
     Task<T?> GetByIdAsync(IDT id);
     Task<List<T>> GetListAsync();
+    Task<T> UpdateAndSave(T entity);
 }
