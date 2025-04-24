@@ -70,7 +70,9 @@ export default function Products() {
               <td className="p-2">{product.productId}</td>
               <td className="p-2">{product.productName}</td>
               <td className="p-2">{product.supplierId}</td>
-              <td className="p-2">{product.categoryId}</td>
+              <td className="p-2">
+                <Link href={`/categories/edit/${product.categoryId}`} className="text-blue-500">{product.categoryId}</Link>
+              </td>
               <td className="p-2">{product.quantityPerUnit}</td>
               <td className="p-2">{product.unitPrice}</td>
               <td className="p-2">{product.unitsInStock}</td>

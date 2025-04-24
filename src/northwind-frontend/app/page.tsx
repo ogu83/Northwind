@@ -17,6 +17,12 @@ export default function Home() {
         >
           Products
         </Link>
+        <Link
+          href="/customers"
+          className="block w-full text-center bg-green-500 font-semibold text-white rounded p-3 cursor-pointer"
+        >
+          Customers
+        </Link>
       </div>
     </div>
   );
