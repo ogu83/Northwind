@@ -59,28 +59,26 @@ export default function Categories() {
         </thead>
         <tbody>
           {categories.map((cat) => (
-            <tr key={cat.categoryId} className="border-b hover:bg-gray-100">
-              <td className="p-2">{cat.categoryId}</td>
-              <td className="p-2">{cat.categoryName}</td>
-              <td className="p-2">{cat.description}</td>
-              <td className="p-2">
+            <tr key={cat.categoryId} className="border-b hover:bg-orange-950">
+              <td className="p-1">{cat.categoryId}</td>
+              <td className="p-1">{cat.categoryName}</td>
+              <td className="p-1">{cat.description}</td>
+              <td className="p-1">
                 <Link href={`/categories/edit/${cat.categoryId}`} className="text-blue-500 p-1">
                   Edit
                 </Link>
-
-                <Link
-                  className="text-blue-500 p-1 cursor-pointer"
-                  href={`/products/category/${cat.categoryId}`} 
-                >
-                  Products
-                </Link>
-
                 <button
                   className="text-red-500 p-1 cursor-pointer"
                   onClick={() => handleDelete(cat.categoryId)}
                 >
                   Delete
                 </button>
+                <Link
+                  className="text-blue-500 p-1 cursor-pointer"
+                  href={`/products/category/${cat.categoryId}`} 
+                >
+                  Products
+                </Link>
             </td>
             </tr>
           ))}

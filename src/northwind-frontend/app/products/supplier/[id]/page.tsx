@@ -5,15 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 
-export default function Products() {
+export default function ProductsSupplier() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { id } = useParams();
   
   // Fetch products
   const { data: products, isLoading, error } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:5205/Product");
+      const res = await axios.get(`http://localhost:5205/Product/Supplier/${id}`);
       return res.data;
     },
   });
@@ -24,26 +25,26 @@ export default function Products() {
       await axios.delete(`http://localhost:5205/Product?id=${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: ["suppliers"] });
     },
     onError: (err) => {
-      console.error("Error deleting product:", err);
-      alert("Failed to delete product.");
+      console.error("Error deleting supplier:", err);
+      alert("Failed to delete supplier.");
     },
   });
 
   const handleDelete = (id: number) => {
-    if (confirm(`Are you sure you want to delete product ${id}?`)) {
+    if (confirm(`Are you sure you want to delete supplier ${id}?`)) {
       deleteMutation.mutate(id);
     }
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading products</div>;
+  if (error) return <div>Error loading suppliers</div>;
 
   return (
     <div className="p-4">
-        <h1 className="text-xl font-semibold mb-4">Products</h1>
+        <h1 className="text-xl font-semibold mb-4">Products By Supplier {id}</h1>
         <div className="flex items-stretch mb-4">
             <Link className="text-blue-500 px-5 cursor-pointer" href="/">Home</Link>
             <Link className="text-blue-500 px-5 cursor-pointer" href="/products/add">Add New</Link>
@@ -51,7 +52,7 @@ export default function Products() {
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
+          <th className="text-left p-2">ID</th>
             <th className="text-left p-2">Name</th>
             <th className="text-left p-2">Supplier Id</th>
             <th className="text-left p-2">Category Id</th>
@@ -85,7 +86,6 @@ export default function Products() {
                 <Link href={`/products/edit/${product.productId}`} className="text-blue-500 p-1">
                   Edit
                 </Link>
-
                 <button
                   className="text-red-500 p-1 cursor-pointer"
                   onClick={() => handleDelete(product.productId)}

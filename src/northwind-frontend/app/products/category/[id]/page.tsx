@@ -67,20 +67,22 @@ export default function ProductsCategory() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr key={product.productId} className="border-b hover:bg-gray-100">
-              <td className="p-2">{product.productId}</td>
-              <td className="p-2">{product.productName}</td>
-              <td className="p-2">{product.supplierId}</td>
-              <td className="p-2">
+            <tr key={product.productId} className="border-b hover:bg-orange-950">
+              <td className="p-1">{product.productId}</td>
+              <td className="p-1">{product.productName}</td>
+              <td className="p-1">
+                <Link href={`/suppliers/edit/${product.supplierId}`} className="text-blue-500">{product.supplierId}</Link>
+              </td>
+              <td className="p-1">
                 <Link href={`/categories/edit/${product.categoryId}`} className="text-blue-500">{product.categoryId}</Link>
               </td>
-              <td className="p-2">{product.quantityPerUnit}</td>
-              <td className="p-2">{product.unitPrice}</td>
-              <td className="p-2">{product.unitsInStock}</td>
-              <td className="p-2">{product.unitsOnOrder}</td>
-              <td className="p-2">{product.reorderLevel}</td>
-              <td className="p-2">{product.discontinued ? 'Yes' : 'No'}</td>
-              <td className="p-2">
+              <td className="p-1">{product.quantityPerUnit}</td>
+              <td className="p-1">{product.unitPrice}</td>
+              <td className="p-1">{product.unitsInStock}</td>
+              <td className="p-1">{product.unitsOnOrder}</td>
+              <td className="p-1">{product.reorderLevel}</td>
+              <td className="p-1">{product.discontinued ? 'Yes' : 'No'}</td>
+              <td className="p-1">
                 <Link href={`/products/edit/${product.productId}`} className="text-blue-500 p-1">
                   Edit
                 </Link>
