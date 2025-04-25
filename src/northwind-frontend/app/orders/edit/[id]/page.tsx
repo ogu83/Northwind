@@ -1,0 +1,316 @@
+"use client";
+
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import DatePicker from "react-datepicker";
+import Link from "next/link";
+
+type Order = {
+    orderId: number,
+    customerId: string,
+    employeeId: number,
+    orderDate: Date,
+    requiredDate: Date,
+    shippedDate: Date,
+    shipVia: number,
+    freight: number,
+    shipName: string,
+    shipAddress: string,
+    shipCity: string,
+    shipRegion: string,
+    shipPostalCode: string,
+    shipCountry: string
+};
+
+type OrderDetail = {
+    orderId: number,
+    productId: number,
+    unitPrice: number,
+    quantity: number,
+    discount: number
+}
+
+export default function EditOrder() {
+  const queryClient = useQueryClient();
+  const { id } = useParams();
+  const router = useRouter();
+
+  const [order, setOrder] = useState<Order>({
+    orderId: Number(id!),
+    customerId: "",
+    employeeId: 0,
+    orderDate: new Date(),
+    requiredDate: new Date(),
+    shippedDate: new Date(),
+    shipVia: 0,
+    freight: 0,
+    shipName: "",
+    shipAddress: "",
+    shipCity: "",
+    shipRegion: "",
+    shipPostalCode: "",
+    shipCountry: ""
+  });
+
+  // fetch order
+  useEffect(() => {
+    axios.get(`http://localhost:5205/Order/${id}`).then((res) => {
+      const d = res.data;
+      setOrder({
+        ...d,
+        // wrap incoming values in Date()
+        orderDate:    new Date(d.orderDate),
+        requiredDate: new Date(d.requiredDate),
+        shippedDate:  new Date(d.shippedDate),
+      });
+    });
+  }, [id]);
+
+  // Fetch order details
+  const { 
+    data: orderdetails = [],    // ← defaults to [] instead of undefined
+    isLoading,
+    error
+  } = useQuery({
+    queryKey: ["orderdetails", id],    // include `id` so it refetches when the order changes
+    queryFn: async () => {
+      const res = await axios.get<OrderDetail[]>(`http://localhost:5205/OrderDetails/Order/${id}`);
+      return res.data;
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await axios.put("http://localhost:5205/Order", {
+        ...order,
+        orderDate: order.orderDate.toISOString(),
+        requiredDate: order.requiredDate.toISOString(),
+        shippedDate: order.shippedDate.toISOString(),
+      });
+    router.push("/orders");
+  }
+
+//   // Delete mutation
+//   const deleteMutation = useMutation({
+//     mutationFn: async (orderId: number, productId: number) => {
+//       await axios.delete(`http://localhost:5205/OrderDetail?orderId=${orderId}&productId=${productId}`);
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["orderdetails"] });
+//     },
+//     onError: (err) => {
+//       console.error("Error deleting order detail:", err);
+//       alert("Failed to delete order detai.");
+//     },
+//   });
+//   const handleDetailDelete = (orderId: number, productId: number) => {
+//         if (confirm(`Are you sure you want to delete order detail ${productId}?`)) {
+//           deleteMutation.mutate(orderId, productId);
+//         }
+//       };
+//   };
+
+  return (
+    <div className="flex flex-col items-top md:flex-row">
+    <div className="p-4 w-100">
+      <h1 className="text-xl font-semibold mb-4">Edit Order {id}</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
+
+        <div>
+          <label className="block mb-1 text-xs">Order Date</label>
+          <DatePicker
+            selected={order.orderDate}
+            onChange={(date) =>
+              setOrder((o) => ({ ...o, orderDate: date! }))
+            }
+            dateFormat="MM/dd/yyyy"
+            className="
+            border p-2 w-full
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+          "
+          calendarClassName="
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+            shadow-lg
+          "
+          dayClassName={() =>
+            "hover:bg-gray-200 dark:hover:bg-gray-700"
+          }
+          />
+        </div>
+        <div>
+          <label className="block mb-1 text-xs">Required Date</label>
+          <DatePicker
+            selected={order.requiredDate}
+            onChange={(date) =>
+              setOrder((o) => ({ ...o, requiredDate: date! }))
+            }
+            dateFormat="MM/dd/yyyy"
+            className="
+            border p-2 w-full
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+          "
+          calendarClassName="
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+            shadow-lg
+          "
+          dayClassName={() =>
+            "hover:bg-gray-200 dark:hover:bg-gray-700"
+          }
+          />
+        </div>
+        <div>
+          <label className="block mb-1 text-xs">Shipped Date</label>
+          <DatePicker
+            selected={order.shippedDate}
+            onChange={(date) =>
+              setOrder((o) => ({ ...o, shippedDate: date! }))
+            }
+            dateFormat="MM/dd/yyyy"
+            className="
+            border p-2 w-full
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+          "
+          calendarClassName="
+            bg-white text-black
+            dark:bg-gray-800 dark:text-gray-100
+            shadow-lg
+          "
+          dayClassName={() =>
+            "hover:bg-gray-200 dark:hover:bg-gray-700"
+          }
+          />
+        </div>
+
+        <input
+          type="number"
+          className="border p-2"
+          placeholder="Ship Via"
+          value={order.shipVia || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipVia: Number(e.target.value) })
+          }
+        />
+
+        <input
+          type="number"
+          className="border p-2"
+          placeholder="Freight"
+          value={order.freight || ""}
+          onChange={(e) =>
+            setOrder({ ...order, freight: Number(e.target.value) })
+          }
+        />
+
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Name"
+          value={order.shipName || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipName: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Name"
+          value={order.shipName || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipName: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Address"
+          value={order.shipAddress || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipAddress: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Region"
+          value={order.shipRegion || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipRegion: e.target.value })
+          }
+        />
+               
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Postal Code"
+          value={order.shipPostalCode || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipPostalCode: e.target.value })
+          }
+        />
+
+        <input
+          type="text"
+          className="border p-2"
+          placeholder="Ship Country"
+          value={order.shipCountry || ""}
+          onChange={(e) =>
+            setOrder({ ...order, shipCountry: e.target.value })
+          }
+        />
+
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+          Save
+        </button>
+      </form>
+    </div>
+    <div className="p-4 w-200">
+        <h2 className="text-xl mb-4">Order Details</h2>
+        <div className="flex items-stretch mb-4">
+            <Link className="text-blue-500 px-5 cursor-pointer" href="/orderdetail/add">Add New</Link>
+        </div>
+        <table className="table-auto w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="text-left p-2">Product Id</th>
+            <th className="text-left p-2">Unit Price</th>
+            <th className="text-left p-2">Quantity</th>
+            <th className="text-left p-2">Discount</th>
+            <th className="text-left p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orderdetails!.map((orderdetail) => (
+            <tr key={`${orderdetail.orderId}-${orderdetail.productId}`} className="border-b hover:bg-orange-950">
+              <td className="p-1">{orderdetail.productId}</td>
+              <td className="p-1">{orderdetail.unitPrice}</td>
+              <td className="p-1">{orderdetail.quantity}</td>
+              <td className="p-1">{orderdetail.discount}</td>
+              <td className="p-1">
+                <Link href={`/orderdetails/edit/${orderdetail.orderId}/${orderdetail.productId}`} className="text-blue-500 p-1">
+                  Edit
+                </Link>
+                {/* <button
+                  className="text-red-500 p-1 cursor-pointer"
+                  onClick={() => handleDetailDelete(orderdetail.orderId, orderdetail.productId)}
+                >
+                  Delete
+                </button> */}
+            </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  );
+}

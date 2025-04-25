@@ -23,6 +23,18 @@ export default function Home() {
         >
           Customers
         </Link>
+        <Link
+          href="/suppliers"
+          className="block w-full text-center bg-green-500 font-semibold text-white rounded p-3 cursor-pointer"
+        >
+          Suppliers
+        </Link>
+        <Link
+          href="/orders"
+          className="block w-full text-center bg-green-500 font-semibold text-white rounded p-3 cursor-pointer"
+        >
+          Orders
+        </Link>
       </div>
     </div>
   );

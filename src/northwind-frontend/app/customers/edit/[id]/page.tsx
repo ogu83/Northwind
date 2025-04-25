@@ -18,7 +18,7 @@ type Customer = {
     fax: string
 };
 
-export default function EditProduct() {
+export default function EditCustomer() {
   const { id } = useParams();
   const router = useRouter();
 
