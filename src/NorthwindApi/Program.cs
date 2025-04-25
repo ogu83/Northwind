@@ -39,6 +39,7 @@ builder.Services.AddSwaggerGen(c=>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+
 });
 
 // Add Mappers to the container
@@ -68,6 +69,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c=>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Northwind API V1");
+    c.InjectStylesheet("https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.1/themes/3.x/theme-newspaper.min.css");
 });
 
 app.MapControllers();
