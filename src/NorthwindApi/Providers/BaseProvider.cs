@@ -36,7 +36,7 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
 
     public virtual Task<T?> GetByIdAsync(IDT id) => FindAsync(id);
     
-    private  async Task<T?> FindAsync(IDT id)
+    protected virtual async Task<T?> FindAsync(IDT id)
     {
         var result = await _context.Set<T>().FindAsync(id);
         return result;

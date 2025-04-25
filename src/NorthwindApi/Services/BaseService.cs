@@ -20,14 +20,14 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         return retVal;
     }
 
-    public async Task<T> GetById(IDT id)
+    public virtual async Task<T> GetById(IDT id)
     {
         var dbObj = await _provider.GetByIdAsync(id);
         var retVal = _mapper.Map<T>(dbObj);
         return retVal;
     }
 
-    public async Task<T> Update(T obj)
+    public virtual async Task<T> Update(T obj)
     {
         var dbObj = _mapper.Map<DBT>(obj);
         dbObj = await _provider.UpdateAndSaveAsync(dbObj);
@@ -35,7 +35,7 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         return retVal;
     }
 
-    public async Task<T> Add(T obj)
+    public virtual async Task<T> Add(T obj)
     {
         var dbObj = _mapper.Map<DBT>(obj);
         dbObj = await _provider.AddAndSaveAsync(dbObj);
@@ -43,7 +43,7 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         return retVal;
     }
 
-    public async Task Delete(IDT id)
+    public virtual async Task Delete(IDT id)
     {
         await _provider.DeleteAndSaveAsync(id);
     }

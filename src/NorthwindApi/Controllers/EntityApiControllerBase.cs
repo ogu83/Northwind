@@ -37,7 +37,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<T>> Get(IDT id)
+    public virtual async Task<ActionResult<T>> Get(IDT id)
     {
         var retVal = await _service.GetById(id);
         if (retVal == null)
