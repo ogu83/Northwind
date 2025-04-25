@@ -92,25 +92,31 @@ export default function EditOrder() {
     router.push("/orders");
   }
 
-//   // Delete mutation
-//   const deleteMutation = useMutation({
-//     mutationFn: async (orderId: number, productId: number) => {
-//       await axios.delete(`http://localhost:5205/OrderDetail?orderId=${orderId}&productId=${productId}`);
-//     },
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ["orderdetails"] });
-//     },
-//     onError: (err) => {
-//       console.error("Error deleting order detail:", err);
-//       alert("Failed to delete order detai.");
-//     },
-//   });
-//   const handleDetailDelete = (orderId: number, productId: number) => {
-//         if (confirm(`Are you sure you want to delete order detail ${productId}?`)) {
-//           deleteMutation.mutate(orderId, productId);
-//         }
-//       };
-//   };
+  // Delete mutation
+  const deleteMutation = useMutation<
+    void,                        // return type
+    unknown,                     // error type
+    { orderId: number; productId: number }  // variables
+    >({
+    mutationFn: async ({ orderId, productId }) => {
+        await axios.delete(
+        `http://localhost:5205/OrderDetail?orderId=${orderId}&productId=${productId}`
+        );
+    },
+    onSuccess: () => {
+        // include the order `id` in the key so it refetches the right list
+        queryClient.invalidateQueries({ queryKey: ["orderdetails", id] });
+    },
+    onError: (err) => {
+        console.error("Error deleting order detail:", err);
+        alert("Failed to delete order detail.");
+    },
+    });
+  const handleDetailDelete = (orderId: number, productId: number) => {
+        if (confirm(`Are you sure you want to delete order detail ${productId}?`)) {
+          deleteMutation.mutate({ orderId, productId });
+        }
+      };
 
   return (
     <div className="flex flex-col items-top md:flex-row">
@@ -299,12 +305,12 @@ export default function EditOrder() {
                 <Link href={`/orderdetails/edit/${orderdetail.orderId}/${orderdetail.productId}`} className="text-blue-500 p-1">
                   Edit
                 </Link>
-                {/* <button
+                <button
                   className="text-red-500 p-1 cursor-pointer"
                   onClick={() => handleDetailDelete(orderdetail.orderId, orderdetail.productId)}
                 >
                   Delete
-                </button> */}
+                </button>
             </td>
             </tr>
           ))}
