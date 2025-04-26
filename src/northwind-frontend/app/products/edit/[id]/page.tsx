@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 
 type Product = {
-  productId: string;
+  productId: number;
   productName: string;
   supplierId: number;
   categoryId: number;
@@ -33,7 +33,7 @@ export default function EditProduct() {
   const router = useRouter();
 
   const [product, setProduct] = useState<Product>({
-    productId: id!,
+    productId: Number(id)!,
     productName: "",
     supplierId: 0,
     categoryId: 0,
@@ -62,7 +62,7 @@ export default function EditProduct() {
     });
   }, []);
 
-  // fetch suppliers list
+  // fetch category list
   useEffect(() => {
     axios.get<Category[]>(`http://localhost:5205/Category`).then((res) => {
       setCategories(res.data);
@@ -141,7 +141,7 @@ export default function EditProduct() {
           placeholder="Unit Price"
           value={product.unitPrice || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitPrice: e.target.value })
+            setProduct({ ...product, unitPrice: Number(e.target.value) })
           }
         />
 
@@ -151,7 +151,7 @@ export default function EditProduct() {
           placeholder="Units In Stock"
           value={product.unitsInStock || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitsInStock: e.target.value })
+            setProduct({ ...product, unitsInStock: Number(e.target.value) })
           }
         />
 
@@ -161,7 +161,7 @@ export default function EditProduct() {
           placeholder="Units On Order"
           value={product.unitsOnOrder || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitsOnOrder: e.target.value })
+            setProduct({ ...product, unitsOnOrder: Number(e.target.value) })
           }
         />
 
@@ -171,7 +171,7 @@ export default function EditProduct() {
           placeholder="Reorder Level"
           value={product.reorderLevel || ""}
           onChange={(e) =>
-            setProduct({ ...product, reorderLevel: e.target.value })
+            setProduct({ ...product, reorderLevel: Number(e.target.value) })
           }
         />
 

@@ -24,22 +24,15 @@ type Order = {
     shipCountry: string
 };
 
-type OrderDetail = {
-    orderId: number,
-    productId: number,
-    unitPrice: number,
-    quantity: number,
-    discount: number
-}
-
 type Customer = {
   customerId: string,
   companyName: string
 }
 
-export default function EditOrder() {
+
+export default function AddOrder() {
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const id = 0;
   const router = useRouter();
 
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -47,7 +40,7 @@ export default function EditOrder() {
   const [order, setOrder] = useState<Order>({
     orderId: Number(id!),
     customerId: "",
-    employeeId: 0,
+    employeeId: 1,
     orderDate: new Date(),
     requiredDate: new Date(),
     shippedDate: new Date(),
@@ -68,80 +61,37 @@ export default function EditOrder() {
     });
   }, []);
 
-  // fetch order
-  useEffect(() => {
-    axios.get(`http://localhost:5205/Order/${id}`).then((res) => {
-      const d = res.data;
-      setOrder({
-        ...d,
-        // wrap incoming values in Date()
-        orderDate:    new Date(d.orderDate),
-        requiredDate: new Date(d.requiredDate),
-        shippedDate:  new Date(d.shippedDate),
-      });
-    });
-  }, [id]);
-
-  // Fetch order details
-  const { 
-    data: orderdetails = [],    // ← defaults to [] instead of undefined
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ["orderdetails", id],    // include `id` so it refetches when the order changes
-    queryFn: async () => {
-      const res = await axios.get<OrderDetail[]>(`http://localhost:5205/OrderDetails/Order/${id}`);
-      return res.data;
-    },
-  });
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.put("http://localhost:5205/Order", {
-        ...order,
-        orderDate: order.orderDate.toISOString(),
-        requiredDate: order.requiredDate.toISOString(),
-        shippedDate: order.shippedDate.toISOString(),
-      });
-    router.push("/orders");
-  }
-
-  // Delete mutation
-  const deleteMutation = useMutation<
-    void,                        // return type
-    unknown,                     // error type
-    { orderId: number; productId: number }  // variables
-    >({
-    mutationFn: async ({ orderId, productId }) => {
-      await axios.delete(
-        "http://localhost:5205/OrderDetails",
+  
+    try {
+      // 1) Send the POST and grab the created Order from the response body
+      const { data: createdOrder } = await axios.post<Order>(
+        "http://localhost:5205/Order",
         {
-          data: {
-            item1: orderId,
-            item2: productId,
-          },
+          ...order,
+          orderDate:    order.orderDate.toISOString(),
+          requiredDate: order.requiredDate.toISOString(),
+          shippedDate:  order.shippedDate.toISOString(),
         }
       );
-    },
-    onSuccess: () => {
-        // include the order `id` in the key so it refetches the right list
-        queryClient.invalidateQueries({ queryKey: ["orderdetails", id] });
-    },
-    onError: (err) => {
-        console.error("Error deleting order detail:", err);
-        alert("Failed to delete order detail.");
-    },
-    });
-  const handleDetailDelete = (orderId: number, productId: number) => {
-      if (confirm(`Are you sure you want to delete order detail ${productId}?`)) {
-        deleteMutation.mutate({ orderId, productId });
-      }
+  
+      // 2) Pull the returned orderId…
+      const orderId = createdOrder.orderId;
+  
+      // 3) …and navigate straight to the edit page for that order
+      router.push(`/orders/edit/${orderId}`);
+    } catch (err) {
+      console.error("Failed to create order", err);
+      alert("Sorry, we couldn't save your order.");
+    }
   };
+  
 
   return (
     <div className="flex flex-col items-top md:flex-row">
     <div className="p-4 w-100">
-      <h1 className="text-xl font-semibold mb-4">Edit Order {id}</h1>
+      <h1 className="text-xl font-semibold mb-4">Add Order</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md">
 
         {/* Customer Dropdown */}
@@ -318,41 +268,6 @@ export default function EditOrder() {
         <Link href="/orders" className="bg-blue-500 text-white px-4 py-2 rounded text-center">Cancel</Link>
       </form>
     </div>
-    <div className="p-4 w-200">
-        <h2 className="text-xl mb-4">Order Details</h2>
-        <div className="flex items-stretch mb-4">
-            <Link className="text-blue-500 px-5 cursor-pointer" href={`/orders/edit/${id}/details/add`}>Add New</Link>
-        </div>
-        <table className="table-auto w-full">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left p-2">Product Id</th>
-            <th className="text-left p-2">Unit Price</th>
-            <th className="text-left p-2">Quantity</th>
-            <th className="text-left p-2">Discount</th>
-            <th className="text-left p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orderdetails!.map((orderdetail) => (
-            <tr key={`${orderdetail.orderId}-${orderdetail.productId}`} className="border-b hover:bg-orange-950">
-              <td className="p-1"><Link className="text-blue-500" href={`/products/edit/${orderdetail.productId}`}>{orderdetail.productId}</Link></td>
-              <td className="p-1">{orderdetail.unitPrice}</td>
-              <td className="p-1">{orderdetail.quantity}</td>
-              <td className="p-1">{orderdetail.discount}</td>
-              <td className="p-1">
-                <button
-                  className="text-red-500 p-1 cursor-pointer"
-                  onClick={() => handleDetailDelete(orderdetail.orderId, orderdetail.productId)}
-                >
-                  Delete
-                </button>
-            </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
     </div>
   );
 }
