@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function AddCategory() {
   const id  = 0;
@@ -41,9 +42,10 @@ export default function AddCategory() {
             setCategory({ ...category, description: e.target.value })
           }
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
           Save
         </button>
+        <Link href="/categories" className="bg-blue-500 text-white px-4 py-2 rounded text-center">Cancel</Link>
       </form>
     </div>
   );

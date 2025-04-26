@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 type Product = {
   productId: string;
@@ -186,9 +187,10 @@ export default function EditProduct() {
           <span className="select-none">Discontinued</span>
         </label>
 
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
           Save
         </button>
+        <Link href="/products" className="bg-blue-500 text-white px-4 py-2 rounded text-center">Cancel</Link>
       </form>
     </div>
   );
