@@ -7,6 +7,13 @@ This is a .NET 9.0 Migration Example.
 
 ## Northwind REST WEB Api
 
+### Run in terminal
+
+```powershell
+cd ./src/NorthwindApi
+dotnet run
+```
+
 ### VS Code Debug Options:
 It will run in local chrome browser 
 - either with SSL at the link https://localhost:7251/swagger/index.html
@@ -67,4 +74,56 @@ To make it run like this please add fallowing two files under the ```\src\Northw
 
 ```
 
+## Northwind REACT UI
+
+### Run in terminal
+
+```powershell
+cd ./src/northwind-frontend
+npm run dev -- -p 5206
+```
+
+### VS Code Debug Options:
+It will run in local: http://localhost:5206/
+
+**tasks.json:**
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "npm: dev (port 5206)",
+        "type": "shell",
+        "command": "npm run dev -- -p 5206",
+        "options": {
+          "cwd": "${workspaceFolder}"
+        },
+        "problemMatcher": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      }
+    ]
+  }
+  
+```
+
+**launch.json**
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Run React Dev Server",
+        "type": "pwa-node",
+        "request": "launch",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "dev", "--", "-p", "5206"],
+        "console": "integratedTerminal",
+        "cwd": "${workspaceFolder}"
+      }
+    ]
+  }
+```
 
