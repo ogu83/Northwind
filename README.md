@@ -5,7 +5,11 @@ This is a .NET 9.0 Migration Example.
 - Backend: WEB API, DB First, Entity Framework, Domain Driven Design.
 - UI: React. 
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5pMxzQb01TI/0.jpg)](https://www.youtube.com/watch?v=5pMxzQb01TI)
+
 ## Northwind REST WEB Api
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/1E2b5hANg2Q/0.jpg)](https://www.youtube.com/watch?v=1E2b5hANg2Q)
 
 ### Run in terminal
 
