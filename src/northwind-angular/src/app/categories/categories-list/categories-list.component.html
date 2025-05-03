@@ -1,0 +1,26 @@
+<table mat-table [dataSource]="categories" class="mat-elevation-z8">
+
+    <!-- ID Column -->
+    <ng-container matColumnDef="categoryId">
+      <th mat-header-cell *matHeaderCellDef> ID </th>
+      <td mat-cell *matCellDef="let c">
+        <a (click)="onEdit(c.categoryId)">{{ c.categoryId }}</a>
+      </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="categoryName">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let c">{{ c.categoryName }}</td>
+    </ng-container>
+  
+    <!-- Description Column -->
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Description </th>
+      <td mat-cell *matCellDef="let c">{{ c.description }}</td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row        *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  

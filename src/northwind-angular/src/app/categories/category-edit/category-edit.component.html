@@ -1,0 +1,20 @@
+<form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="categoryName">
+      <mat-error *ngIf="categoryForm.get('categoryName')?.hasError('required')">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" type="submit" [disabled]="!categoryForm.valid">
+      Save
+    </button>
+    <button mat-button (click)="onCancel()">Cancel</button>
+  </form>
+  

@@ -19,6 +19,10 @@ builder.Services.AddCors(options =>
         policy => policy.WithOrigins("http://localhost:5206", "https://localhost:7252")
                         .AllowAnyHeader()
                         .AllowAnyMethod());
+    options.AddPolicy("AllowAngularFrontend",
+        policy => policy.WithOrigins("http://localhost:5207", "https://localhost:7253")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
 });
 
 // Add Controllers to the container
@@ -65,6 +69,7 @@ builder.Services.AddTransient<ISupplierService, SupplierService>();
 var app = builder.Build();
 
 app.UseCors("AllowNextJsFrontend");
+app.UseCors("AllowAngularFrontend");
 app.UseSwagger();
 app.UseSwaggerUI(c=>
 {

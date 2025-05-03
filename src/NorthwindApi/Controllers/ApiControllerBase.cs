@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using NorthwindApi.Controllers;
 
 namespace NorthwindApi.Controllers;
 
