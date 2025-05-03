@@ -9,6 +9,8 @@ public interface IBaseProvider<T, IDT>
 {
     Task<T?> GetByIdAsync(IDT id);
     Task<List<T>> GetListAsync();
+    Task<List<T>> GetListAsync(int skip, int take);
+    Task<int> GetTotalCount();
     Task<T> AddAsync(T entity);
     Task<T> AddAndSaveAsync(T entity);
     T Update(T entity);

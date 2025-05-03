@@ -18,7 +18,12 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
     
     protected virtual IQueryable<T> Query() => _context.Set<T>();
 
+    public virtual Task<int> GetTotalCount() => Query().CountAsync();
+
     public virtual Task<List<T>> GetListAsync() => Query().ToListAsync();
+
+    public virtual Task<List<T>> GetListAsync(int skip, int take) => 
+        GetValues(skip, take).ToListAsync();
 
     public virtual IQueryable<T> GetValues(int skip, int take, Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>? orderBy = null)
     {

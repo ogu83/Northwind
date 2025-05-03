@@ -1,3 +1,4 @@
+using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi.Models;
 using NorthwindApi.Services;
@@ -20,11 +21,32 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IEnumerable<T>>> Get()
+    public async Task<ActionResult<List<T>>> Get()
     {
         var retVal = await _service.GetListAsync();
+
         if (retVal.Count > 0)
-            return new ActionResult<IEnumerable<T>>(retVal);
+            return new ActionResult<List<T>>(retVal);
+        else
+            return new NotFoundResult();
+    }
+
+    /// <summary>
+    /// Get List
+    /// </summary>
+    /// <param name="skip">Skip element count for paging</param>
+    /// <param name="take">Take element count for paging</param>
+    /// <returns>All Elements</returns>
+    /// <response code="200">Returns all elements</response>
+    /// <response code="404">If there is no elements</response>
+    [HttpGet("skip/{skip}/take/{take}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take)
+    {
+        var retVal = await _service.GetPagedListAsync(skip, take);
+        if (retVal.ItemCount > 0)
+            return new ActionResult<PagedList<T>>(retVal);
         else
             return new NotFoundResult();
     }

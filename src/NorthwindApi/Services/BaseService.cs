@@ -20,6 +20,20 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         return retVal;
     }
 
+    public async Task<PagedList<T>> GetPagedListAsync(int skip, int take)
+    {
+        var dbObj = await _provider.GetListAsync(skip, take);
+        var items = _mapper.Map<List<T>>(dbObj);
+        var totalCount = await _provider.GetTotalCount();
+        var retval = new PagedList<T>
+        {
+            Items = items,
+            StartIndex = skip,
+            TotalCount = totalCount
+        };
+        return retval;
+    }
+
     public virtual async Task<T> GetById(IDT id)
     {
         var dbObj = await _provider.GetByIdAsync(id);
