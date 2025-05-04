@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function Suppliers() {
-  
+
   function renderHomePageLink(raw: string | null) {
     if (!raw) {
       return <span className="text-gray-500">—</span>;
@@ -55,6 +55,7 @@ export default function Suppliers() {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
       const res = await axios.get<{
+        totalCount: number;
         items: any[];
         pageCount: number;
         pageIndex: number;

@@ -23,6 +23,7 @@ export default function Customers() {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
       const res = await axios.get<{
+        totalCount: number;
         items: any[];
         pageCount: number;
         pageIndex: number;
