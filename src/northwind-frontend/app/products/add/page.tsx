@@ -55,7 +55,7 @@ export default function AddProduct() {
     });
   }, []);
 
-  // fetch suppliers list
+  // fetch category list
   useEffect(() => {
     axios.get<Category[]>(`http://localhost:5205/Category`).then((res) => {
       setCategories(res.data);
