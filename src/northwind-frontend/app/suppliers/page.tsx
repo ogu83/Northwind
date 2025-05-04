@@ -6,7 +6,39 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function Suppliers() {
+  
+  function renderHomePageLink(raw: string | null) {
+    if (!raw) {
+      return <span className="text-gray-500">—</span>;
+    }
+
+    const parts = raw.split("#");
+    // parts = ["", "CAJUN.HTM", ""] when raw === "#CAJUN.HTM#"
+    if (parts.length >= 2) {
+      // use the URL itself as display text if none was provided
+      const url = parts[1];
+      const text = parts[0] || url;
+
+      if (url) {
+        return (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 underline"
+          >
+            {text}
+          </a>
+        );
+      }
+    }
+
+    // fallback if it doesn’t match the pattern
+    return raw;
+  }
+
   const queryClient = useQueryClient();
+
   // pagination state
   const [pageIndex, setPageIndex] = useState(1); // 1-based
   const [pageSize, setPageSize] = useState(10); // items per page
@@ -108,7 +140,7 @@ export default function Suppliers() {
               <td className="p-1">{supplier.country}</td>
               <td className="p-1">{supplier.phone}</td>
               <td className="p-1">{supplier.fax}</td>
-              <td className="p-1">{supplier.homePage}</td>
+              <td className="p-1">{renderHomePageLink(supplier.homePage)}</td>
               <td className="p-1">
                 <Link
                   href={`/suppliers/edit/${supplier.supplierId}`}
