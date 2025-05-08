@@ -11,6 +11,9 @@ dotnet add package AutoMapper
 
 FRONTEND
 ---------------------------------------
+
+REACT:
+
 Run this command to quickly set up a Next.js application:
 npx create-next-app@latest northwind-frontend
 cd northwind-frontend
@@ -20,3 +23,12 @@ npm install axios @tanstack/react-query @shadcn/ui tailwindcss
 
 DatePicker:
 npm install react-datepicker
+
+ANGULAR:
+npm install -g @angular/cli
+ng new northwind-angular --routing --style=scss
+
+
+REDIS
+--------------------------------------
+docker run -d --name northwind-redis -p 6379:6379 redis:latest

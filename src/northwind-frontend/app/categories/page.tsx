@@ -19,7 +19,7 @@ export default function Categories() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["orders", pageIndex, pageSize],
+    queryKey: ["categories", pageIndex, pageSize],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
