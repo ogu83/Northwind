@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 
 export default function AddCategory() {
-  const id  = 0;
+  const id = 0;
   const router = useRouter();
 
   const [category, setCategory] = useState({
@@ -15,7 +15,7 @@ export default function AddCategory() {
     description: "",
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.post("http://localhost:5205/Category", category);
     router.push("/categories");
@@ -42,10 +42,18 @@ export default function AddCategory() {
             setCategory({ ...category, description: e.target.value })
           }
         />
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
           Save
         </button>
-        <Link href="/categories" className="bg-blue-500 text-white px-4 py-2 rounded text-center">Cancel</Link>
+        <Link
+          href="/categories"
+          className="bg-blue-500 text-white px-4 py-2 rounded text-center"
+        >
+          Cancel
+        </Link>
       </form>
     </div>
   );
