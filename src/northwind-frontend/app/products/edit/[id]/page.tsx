@@ -69,7 +69,7 @@ export default function EditProduct() {
     });
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.put("http://localhost:5205/Product", product);
     router.push("/products");

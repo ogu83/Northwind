@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 
 type Product = {
-  productId: string;
+  productId: number;
   productName: string;
   supplierId: number;
   categoryId: number;
@@ -33,7 +33,7 @@ export default function AddProduct() {
   const router = useRouter();
 
   const [product, setProduct] = useState<Product>({
-    productId: id!,
+    productId: Number(id),
     productName: "",
     supplierId: 0,
     categoryId: 0,
@@ -62,7 +62,7 @@ export default function AddProduct() {
     });
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.post("http://localhost:5205/Product", product);
     router.push("/products");
@@ -134,7 +134,7 @@ export default function AddProduct() {
           placeholder="Unit Price"
           value={product.unitPrice || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitPrice: e.target.value })
+            setProduct({ ...product, unitPrice: Number(e.target.value) })
           }
         />
 
@@ -144,7 +144,7 @@ export default function AddProduct() {
           placeholder="Units In Stock"
           value={product.unitsInStock || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitsInStock: e.target.value })
+            setProduct({ ...product, unitsInStock: Number(e.target.value) })
           }
         />
 
@@ -154,7 +154,7 @@ export default function AddProduct() {
           placeholder="Units On Order"
           value={product.unitsOnOrder || ""}
           onChange={(e) =>
-            setProduct({ ...product, unitsOnOrder: e.target.value })
+            setProduct({ ...product, unitsOnOrder: Number(e.target.value) })
           }
         />
 
@@ -164,7 +164,7 @@ export default function AddProduct() {
           placeholder="Reorder Level"
           value={product.reorderLevel || ""}
           onChange={(e) =>
-            setProduct({ ...product, reorderLevel: e.target.value })
+            setProduct({ ...product, reorderLevel: Number(e.target.value) })
           }
         />
 

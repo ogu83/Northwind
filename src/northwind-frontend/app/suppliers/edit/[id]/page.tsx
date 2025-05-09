@@ -6,26 +6,29 @@ import axios from "axios";
 import Link from "next/link";
 
 type Supplier = {
-    supplierId: number,
-    companyName: string,
-    contactName: string,
-    contactTitle: string,
-    address: string,
-    city: string,
-    region: string,
-    postalCode: string,
-    country: string,
-    phone: string,
-    fax: string,
-    homePage: string
+  supplierId: number;
+  companyName: string;
+  contactName: string;
+  contactTitle: string;
+  address: string;
+  city: string;
+  region: string;
+  postalCode: string;
+  country: string;
+  phone: string;
+  fax: string;
+  homePage: string;
 };
 
 export default function EditProduct() {
   const { id } = useParams();
   const router = useRouter();
 
+  const rawId = Array.isArray(id) ? id[0] : id; // if id was ['5'], take '5'
+  const supplierId = rawId ? parseInt(rawId, 10) : 0;
+
   const [supplier, setSupplier] = useState<Supplier>({
-    supplierId: id!,
+    supplierId: supplierId!,
     companyName: "",
     contactName: "",
     contactTitle: "",
@@ -35,7 +38,8 @@ export default function EditProduct() {
     postalCode: "",
     country: "",
     phone: "",
-    fax: ""
+    fax: "",
+    homePage: ''
   });
 
   // fetch supplier
@@ -45,7 +49,7 @@ export default function EditProduct() {
     });
   }, [id]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     await axios.put("http://localhost:5205/Supplier", supplier);
     router.push("/suppliers");
@@ -100,9 +104,7 @@ export default function EditProduct() {
           className="border p-2"
           placeholder="City"
           value={supplier.city || ""}
-          onChange={(e) =>
-            setSupplier({ ...supplier, city: e.target.value })
-          }
+          onChange={(e) => setSupplier({ ...supplier, city: e.target.value })}
         />
 
         <input
@@ -110,11 +112,9 @@ export default function EditProduct() {
           className="border p-2"
           placeholder="Region"
           value={supplier.region || ""}
-          onChange={(e) =>
-            setSupplier({ ...supplier, region: e.target.value })
-          }
+          onChange={(e) => setSupplier({ ...supplier, region: e.target.value })}
         />
-        
+
         <input
           type="text"
           className="border p-2"
@@ -140,9 +140,7 @@ export default function EditProduct() {
           className="border p-2"
           placeholder="Phone"
           value={supplier.phone || ""}
-          onChange={(e) =>
-            setSupplier({ ...supplier, phone: e.target.value })
-          }
+          onChange={(e) => setSupplier({ ...supplier, phone: e.target.value })}
         />
 
         <input
@@ -150,11 +148,9 @@ export default function EditProduct() {
           className="border p-2"
           placeholder="Fax"
           value={supplier.fax || ""}
-          onChange={(e) =>
-            setSupplier({ ...supplier, fax: e.target.value })
-          }
+          onChange={(e) => setSupplier({ ...supplier, fax: e.target.value })}
         />
-        
+
         <input
           type="text"
           className="border p-2"
@@ -165,10 +161,18 @@ export default function EditProduct() {
           }
         />
 
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
           Save
         </button>
-        <Link href="/suppliers" className="bg-blue-500 text-white px-4 py-2 rounded text-center">Cancel</Link>
+        <Link
+          href="/suppliers"
+          className="bg-blue-500 text-white px-4 py-2 rounded text-center"
+        >
+          Cancel
+        </Link>
       </form>
     </div>
   );

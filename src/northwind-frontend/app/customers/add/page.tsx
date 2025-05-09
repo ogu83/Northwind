@@ -23,7 +23,7 @@ const [customer, setCustomer] = useState({
     fax: ""
 });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.post("http://localhost:5205/Customer", customer);
     router.push("/customers");

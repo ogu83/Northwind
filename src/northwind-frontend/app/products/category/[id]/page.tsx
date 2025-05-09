@@ -66,7 +66,7 @@ export default function ProductsCategory() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {products.map((product: any) => (
             <tr key={product.productId} className="border-b hover:bg-orange-950">
               <td className="p-1">{product.productId}</td>
               <td className="p-1">{product.productName}</td>

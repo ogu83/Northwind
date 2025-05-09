@@ -70,7 +70,7 @@ export default function Orders() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {orders.map((order: any) => (
             <tr key={order.orderId} className="border-b hover:bg-orange-950">
               <td className="p-1">{order.orderId}</td>
               <td className="p-1">

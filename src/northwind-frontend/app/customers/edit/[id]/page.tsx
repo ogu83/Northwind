@@ -23,8 +23,11 @@ export default function EditCustomer() {
   const { id } = useParams();
   const router = useRouter();
 
+  const rawId = Array.isArray(id) ? id[0] : id; 
+  const supplierId = rawId ? parseInt(rawId, 10) : 0;
+
   const [customer, setCustomer] = useState<Customer>({
-    customerId: id!,
+    customerId: rawId!,
     companyName: "",
     contactName: "",
     contactTitle: "",
@@ -44,7 +47,7 @@ export default function EditCustomer() {
     });
   }, [id]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.put("http://localhost:5205/Customer", customer);
     router.push("/customers");

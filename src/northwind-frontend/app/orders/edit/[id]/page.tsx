@@ -95,7 +95,7 @@ export default function EditOrder() {
     },
   });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.put("http://localhost:5205/Order", {
         ...order,

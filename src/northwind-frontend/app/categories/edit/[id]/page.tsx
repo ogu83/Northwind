@@ -21,7 +21,7 @@ export default function EditCategory() {
     });
   }, [id]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     await axios.put("http://localhost:5205/Category", category);
     router.push("/categories");
