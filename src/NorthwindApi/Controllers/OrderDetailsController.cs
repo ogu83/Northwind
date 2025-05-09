@@ -23,7 +23,7 @@ public class OrderDetailsController(IOrderDetailService orderDetailsService)
     [HttpGet("{orderID}/{productId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrderDetail>> Get(int orderID, int productId)
+    public async new Task<ActionResult<OrderDetail>> Get(int orderID, int productId)
     {
         var retVal = await orderDetailsService.GetById(new Tuple<int, int>(orderID, productId));
         if (retVal == null)

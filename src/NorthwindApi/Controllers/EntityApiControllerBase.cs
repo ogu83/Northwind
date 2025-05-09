@@ -20,6 +20,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public async Task<ActionResult<List<T>>> Get()
     {
         var retVal = await _service.GetListAsync();
@@ -41,6 +42,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [HttpGet("skip/{skip}/take/{take}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
     public async Task<ActionResult<PagedList<T>>> Get(int skip, int take)
     {
         var retVal = await _service.GetPagedListAsync(skip, take);
@@ -58,6 +60,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public virtual async Task<ActionResult<T>> Get(IDT id)
     {
         var retVal = await _service.GetById(id);

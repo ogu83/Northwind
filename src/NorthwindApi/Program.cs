@@ -65,11 +65,15 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IOrderDetailService, OrderDetailService>();
 builder.Services.AddTransient<ISupplierService, SupplierService>();
 
+//Response Cache
+// builder.Services.AddResponseCaching();
+
 //Build the app
 var app = builder.Build();
 
 app.UseCors("AllowNextJsFrontend");
 app.UseCors("AllowAngularFrontend");
+
 app.UseSwagger();
 app.UseSwaggerUI(c=>
 {
@@ -78,6 +82,8 @@ app.UseSwaggerUI(c=>
 });
 
 app.MapControllers();
+app.UseResponseCaching();
+
 app.Run();
 
 public partial class Program { }
