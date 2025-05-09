@@ -54,23 +54,25 @@ def user_story(take=10):
     order = random.choice(page.get('items', page)) if page else None
     if not order:
         return
+        
+    found = find_order(order["orderId"], take)
 
-    # Step 2: Edit order
-    original = update_order_random(order)
-    time.sleep(0.1)
+    # # Step 2: Edit order
+    # original = update_order_random(order)
+    # time.sleep(0.1)
 
-    # Step 3: Re-fetch and revert
-    updated = requests.get(f"{BASE_URL}/Order/{order['orderId']}").json()
-    requests.put(f"{BASE_URL}/Order", json=original).raise_for_status()
+    # # Step 3: Re-fetch and revert
+    # updated = requests.get(f"{BASE_URL}/Order/{order['orderId']}").json()
+    # requests.put(f"{BASE_URL}/Order", json=original).raise_for_status()
 
-    # Step 4: Create new order
-    created = create_order(updated)
-    new_id = created['orderId']
+    # # Step 4: Create new order
+    # created = create_order(updated)
+    # new_id = created['orderId']
 
-    # Step 5: Find created order
-    found = find_order(new_id, take)
-    # Step 6: Delete the order
-    delete_order(new_id)
+    # # Step 5: Find created order
+    # found = find_order(new_id, take)
+    # # Step 6: Delete the order
+    # delete_order(new_id)
 
 def timed_user_story(iteration, take=10):
     start = time.time()
