@@ -5,12 +5,23 @@ using NorthwindApi;
 using NorthwindApi.DbModels;
 using NorthwindApi.Providers;
 using NorthwindApi.Services;
+using Serilog;
+using Serilog.Events;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Logging
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole(); 
+builder.Services.AddSerilog((services, lc) => lc
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
+// builder.Logging.ClearProviders();
+// builder.Logging.AddConsole(); 
 
 // Configure EF Core with SQL Server
 builder.Services.AddDbContext<InstnwndContext>(options =>
@@ -74,6 +85,23 @@ builder.Services.AddTransient<ISupplierService, SupplierService>();
 
 //Build the app
 var app = builder.Build();
+
+//SeriLog request Logging
+app.UseSerilogRequestLogging(options =>
+{
+    // Customize the message template
+    options.MessageTemplate = "Handled {RequestPath}";
+    
+    // Emit debug-level events instead of the defaults
+    options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
+    
+    // Attach additional properties to the request completion event
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+        diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+    };
+});
 
 //Error Logging
 if (!app.Environment.IsDevelopment())
