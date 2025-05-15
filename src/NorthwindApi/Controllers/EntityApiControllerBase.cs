@@ -26,11 +26,18 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public async Task<ActionResult<List<T>>> Get()
     {
-        _logger.LogInformation("{0} | {1} Get Called",
-            DateTime.UtcNow.ToLongTimeString(),
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Get Called",
+            start.ToLongTimeString(),
             _className);
 
         var retVal = await _service.GetListAsync();
+
+        _logger.LogDebug("{0} | {1} Get Completed in {2} sec, Result: {3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds,
+            JsonSerializer.Serialize(retVal));
 
         if (retVal.Count > 0)
             return new ActionResult<List<T>>(retVal);
@@ -52,12 +59,20 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
     public async Task<ActionResult<PagedList<T>>> Get(int skip, int take)
     {
-        _logger.LogInformation("{0} | {1} Get called with skip:{2},take:{3}",
-            DateTime.UtcNow.ToLongTimeString(),
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Get called with skip:{2},take:{3}",
+            start.ToLongTimeString(),
             _className,
             skip, take);
 
         var retVal = await _service.GetPagedListAsync(skip, take);
+
+        _logger.LogDebug("{0} | {1} Get Completed in {2}, Result: {3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds,
+            JsonSerializer.Serialize(retVal));
+
         if (retVal.ItemCount > 0)
             return new ActionResult<PagedList<T>>(retVal);
         else
@@ -75,11 +90,20 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public virtual async Task<ActionResult<T>> Get(IDT id)
     {
-        _logger.LogInformation("{0} | {1} Get called with id:{2}",
-            DateTime.UtcNow.ToLongTimeString(),
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Get called with id:{2}",
+            start.ToLongTimeString(),
             _className,
             id);
+
         var retVal = await _service.GetById(id);
+
+        _logger.LogDebug("{0} | {1} Get Completed in {2}, Result: {3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds,
+            JsonSerializer.Serialize(retVal));
+
         if (retVal == null)
             return NotFound();
         return new ActionResult<T>(retVal);
@@ -95,11 +119,20 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<T>> Put(T obj)
     {
-        _logger.LogInformation("{0} | {1} Put called with obj:{2}",
-            DateTime.UtcNow.ToLongTimeString(),
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Put called with obj:{2}",
+            start.ToLongTimeString(),
             _className,
             JsonSerializer.Serialize(obj));
+        
         var retVal = await _service.Update(obj);
+
+        _logger.LogDebug("{0} | {1} Put Completed in {2}, Result: {3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds,
+            JsonSerializer.Serialize(retVal));
+
         if (retVal == null)
             return NotFound();
         return new ActionResult<T>(retVal);
@@ -114,11 +147,20 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<T>> Post(T obj)
     {
-        _logger.LogInformation("{0} | {1} Post called with obj:{2}",
-            DateTime.UtcNow.ToLongTimeString(),
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Post called with obj:{2}",
+            start.ToLongTimeString(),
             _className,
             JsonSerializer.Serialize(obj));
+
         var retVal = await _service.Add(obj);
+
+        _logger.LogDebug("{0} | {1} Post Completed in {2}, Result: {3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds,
+            JsonSerializer.Serialize(retVal));
+
         if (retVal == null)
             return NotFound();
         return new ActionResult<T>(retVal);
@@ -133,11 +175,19 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Delete(IDT id)
     {
-        _logger.LogInformation("{0} | {1} Delete called with id:{2}",
+        var start = DateTime.UtcNow;
+        _logger.LogDebug("{0} | {1} Delete called with id:{2}",
             DateTime.UtcNow.ToLongTimeString(),
             _className,
             id);
+
         await _service.Delete(id);
+        
+        _logger.LogDebug("{0} | {1} Delete Completed in {2}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            (DateTime.UtcNow - start).TotalSeconds);
+
         return Ok();
     }
 }
