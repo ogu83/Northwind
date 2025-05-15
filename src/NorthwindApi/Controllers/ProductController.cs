@@ -4,9 +4,11 @@ using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public class ProductController(IProductService productService)
-    : EntityApiControllerBase<Product, IProductService, int>(productService)
+public class ProductController(IProductService service, ILoggerFactory loggerFactory) 
+    : EntityApiControllerBase<Product, IProductService, int>(service, loggerFactory)
 {
+    private readonly IProductService _productService = service;
+
     /// <summary>
     /// Returns Products in a Category
     /// </summary>
@@ -16,7 +18,7 @@ public class ProductController(IProductService productService)
     [HttpGet("Category/{id}")]
     public async Task<ActionResult<IEnumerable<Product>>> GetByCategory(int id)
     {
-        var retVal = await productService.GetListByCategoryAsync(id);
+        var retVal = await _productService.GetListByCategoryAsync(id);
         return retVal;
     }
 
@@ -29,7 +31,7 @@ public class ProductController(IProductService productService)
     [HttpGet("Supplier/{id}")]
     public async Task<ActionResult<IEnumerable<Product>>> GetBySupplier(int id)
     {
-        var retVal = await productService.GetListBySupplier(id);
+        var retVal = await _productService.GetListBySupplier(id);
         return retVal;
     }
 }

@@ -4,9 +4,11 @@ using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public class CategoryController(ICategoryService categoryService) 
-    : EntityApiControllerBase<Category, ICategoryService, int>(categoryService)
+public class CategoryController(ICategoryService service, ILoggerFactory loggerFactory)
+    : EntityApiControllerBase<Category, ICategoryService, int>(service, loggerFactory)
 {
+    private readonly ICategoryService _categoryService = service;
+    
     /// <summary>
     /// Returns the picture of the category as a mime type of image/bmp
     /// </summary>
@@ -17,7 +19,7 @@ public class CategoryController(ICategoryService categoryService)
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetPicture(int id)
     {
-        var bytes = await categoryService.GetPictureAsync(id);
+        var bytes = await _categoryService.GetPictureAsync(id);
         if (bytes == null)
         {
             return NotFound();

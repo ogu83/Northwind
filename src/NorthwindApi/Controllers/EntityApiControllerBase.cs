@@ -1,15 +1,18 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi.Models;
 using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> service) 
-    : ApiControllerBase 
-    where T: BaseModel 
-    where S: IBaseService<T, IDT> 
+public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFactory loggerFactory)
+    : ApiControllerBase(loggerFactory)
+    where T : BaseModel
+    where S : IBaseService<T, IDT>
 {
-    private readonly IBaseService<T, IDT> _service = service;
+    protected readonly IBaseService<T, IDT> _service = service ?? throw new ArgumentNullException(nameof(service));
+
+    protected string _className => GetType().Name;
 
     /// <summary>
     /// Get List
@@ -23,6 +26,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public async Task<ActionResult<List<T>>> Get()
     {
+        _logger.LogInformation("{0} | {1} Get Called",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className);
+
         var retVal = await _service.GetListAsync();
 
         if (retVal.Count > 0)
@@ -45,6 +52,11 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
     public async Task<ActionResult<PagedList<T>>> Get(int skip, int take)
     {
+        _logger.LogInformation("{0} | {1} Get called with skip:{2},take:{3}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            skip, take);
+
         var retVal = await _service.GetPagedListAsync(skip, take);
         if (retVal.ItemCount > 0)
             return new ActionResult<PagedList<T>>(retVal);
@@ -63,6 +75,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 10)]
     public virtual async Task<ActionResult<T>> Get(IDT id)
     {
+        _logger.LogInformation("{0} | {1} Get called with id:{2}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            id);
         var retVal = await _service.GetById(id);
         if (retVal == null)
             return NotFound();
@@ -79,6 +95,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<T>> Put(T obj)
     {
+        _logger.LogInformation("{0} | {1} Put called with obj:{2}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            JsonSerializer.Serialize(obj));
         var retVal = await _service.Update(obj);
         if (retVal == null)
             return NotFound();
@@ -94,6 +114,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<T>> Post(T obj)
     {
+        _logger.LogInformation("{0} | {1} Post called with obj:{2}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            JsonSerializer.Serialize(obj));
         var retVal = await _service.Add(obj);
         if (retVal == null)
             return NotFound();
@@ -109,6 +133,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(IBaseService<T, IDT> se
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Delete(IDT id)
     {
+        _logger.LogInformation("{0} | {1} Delete called with id:{2}",
+            DateTime.UtcNow.ToLongTimeString(),
+            _className,
+            id);
         await _service.Delete(id);
         return Ok();
     }

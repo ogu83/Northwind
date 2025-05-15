@@ -4,9 +4,11 @@ using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public class OrderDetailsController(IOrderDetailService orderDetailsService)
-    : EntityApiControllerBase<OrderDetail, IOrderDetailService, Tuple<int, int>>(orderDetailsService)
+public class OrderDetailsController(IOrderDetailService service, ILoggerFactory logger)
+    : EntityApiControllerBase<OrderDetail, IOrderDetailService, Tuple<int, int>>(service, logger)
 {
+    private readonly IOrderDetailService _orderDetailsService = service;
+
     /// <summary>
     /// Returns order details of an order.
     /// </summary>
@@ -16,7 +18,7 @@ public class OrderDetailsController(IOrderDetailService orderDetailsService)
     [HttpGet("Order/{id}")]
     public async Task<ActionResult<IEnumerable<OrderDetail>>> GetByOrder(int id)
     {
-        var retval = await orderDetailsService.GetByOrder(id);
+        var retval = await _orderDetailsService.GetByOrder(id);
         return retval;
     }
 
@@ -25,7 +27,7 @@ public class OrderDetailsController(IOrderDetailService orderDetailsService)
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async new Task<ActionResult<OrderDetail>> Get(int orderID, int productId)
     {
-        var retVal = await orderDetailsService.GetById(new Tuple<int, int>(orderID, productId));
+        var retVal = await _orderDetailsService.GetById(new Tuple<int, int>(orderID, productId));
         if (retVal == null)
             return NotFound();
         return new ActionResult<OrderDetail>(retVal);

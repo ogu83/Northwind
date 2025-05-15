@@ -8,6 +8,10 @@ using NorthwindApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); 
+
 // Configure EF Core with SQL Server
 builder.Services.AddDbContext<InstnwndContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("InstnwndConn")));
@@ -70,6 +74,13 @@ builder.Services.AddTransient<ISupplierService, SupplierService>();
 
 //Build the app
 var app = builder.Build();
+
+//Error Logging
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseCors("AllowNextJsFrontend");
 app.UseCors("AllowAngularFrontend");

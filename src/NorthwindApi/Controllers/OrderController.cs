@@ -4,9 +4,11 @@ using NorthwindApi.Services;
 
 namespace NorthwindApi.Controllers;
 
-public class OrderController(IOrderService orderService)
-    : EntityApiControllerBase<Order, IOrderService, int>(orderService)
+public class OrderController(IOrderService service, ILoggerFactory loggerFactory)
+    : EntityApiControllerBase<Order, IOrderService, int>(service, loggerFactory)
 {
+    private readonly IOrderService _orderService = service;
+
     /// <summary>
     /// Returns the Orders of the specified Customer.
     /// </summary>
@@ -16,7 +18,7 @@ public class OrderController(IOrderService orderService)
     [HttpGet("Customer/{id}")]
     public async Task<ActionResult<IEnumerable<Order>>> GetByCustomer(string id)
     {
-        var retval = await orderService.GetByCustomer(id);
+        var retval = await _orderService.GetByCustomer(id);
         return retval;
     }
 }
