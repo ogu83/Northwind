@@ -8,10 +8,10 @@ namespace NorthwindApi.Services;
 /// <typeparam name="T">Model class type</typeparam>
 /// <typeparam name="IDT">Primary key type</typeparam>
 public interface IBaseService<T, IDT>
-    where T: BaseModel
+    where T : BaseModel
 {
     Task<List<T>> GetListAsync();
-    Task<PagedList<T>> GetPagedListAsync(int skip, int take);
+    Task<PagedList<T>> GetPagedListAsync(int skip, int take, string orderBy, bool isAscending);
     Task<T> GetById(IDT id);
     Task<T> Update(T obj);
     Task<T> Add(T obj);

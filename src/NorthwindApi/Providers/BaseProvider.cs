@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NorthwindApi.DbModels;
@@ -10,37 +11,56 @@ namespace NorthwindApi.Providers;
 /// <typeparam name="T">Entity Type</typeparam>
 /// <typeparam name="IDT">Primary Key Type</typeparam>
 /// <param name="context">Database Context</param>
-public abstract class BaseProvider<T, IDT>(InstnwndContext context) 
-    : IBaseProvider<T, IDT> 
-    where T: class
+public abstract class BaseProvider<T, IDT>(InstnwndContext context)
+    : IBaseProvider<T, IDT>
+    where T : class
 {
     protected readonly InstnwndContext _context = context;
-    
+
     protected virtual IQueryable<T> Query() => _context.Set<T>();
 
     public virtual Task<int> GetTotalCount() => Query().CountAsync();
 
     public virtual Task<List<T>> GetListAsync() => Query().ToListAsync();
 
-    public virtual Task<List<T>> GetListAsync(int skip, int take) => 
-        GetValues(skip, take).ToListAsync();
+    public virtual Task<List<T>> GetListAsync(int skip, int take)
+        => GetValues(skip, take).ToListAsync();
 
-    public virtual IQueryable<T> GetValues(int skip, int take, Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>? orderBy = null)
+    public virtual Task<List<T>> GetListAsync(int skip, int take, string orderBy, bool isAscending)
+        => GetValues(skip, take, orderBy, isAscending).ToListAsync();
+
+    public virtual IQueryable<T> GetValues(int skip, int take, string orderBy = "", bool isAscending = true, Expression<Func<T, bool>>? filter = null)
     {
         var q = Query();
+
         if (filter != null)
         {
             q = q.Where(filter);
         }
-        if (orderBy != null)
+
+        if (!string.IsNullOrEmpty(orderBy))
         {
-            q = q.OrderBy(orderBy);
+            var entityType = _context.Model.FindEntityType(typeof(T))!;
+            var prop = entityType
+              .GetProperties()
+              .FirstOrDefault(p =>
+                p.Name.Equals(orderBy, StringComparison.OrdinalIgnoreCase));
+            var colType = prop?.GetColumnType()?.ToLowerInvariant();
+            if (colType is not ("text" or "ntext" or "image"))
+            {
+                q = isAscending ? q.OrderBy(orderBy) : q.OrderByDescending(orderBy);
+            }
+            else
+            {
+                throw new ArgumentException($"{entityType.Name} can't be ordered by {orderBy} because column type is {colType} on database");
+            }
         }
+
         return q.Skip(skip).Take(take);
     }
 
     public virtual Task<T?> GetByIdAsync(IDT id) => FindAsync(id);
-    
+
     protected virtual async Task<T?> FindAsync(IDT id)
     {
         var result = await _context.Set<T>().FindAsync(id);

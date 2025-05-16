@@ -98,7 +98,7 @@ app.UseSerilogRequestLogging(options =>
     // Attach additional properties to the request completion event
     options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
     {
-        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+        diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value ?? "");
         diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
     };
 });
@@ -110,9 +110,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//CORS
 app.UseCors("AllowNextJsFrontend");
 app.UseCors("AllowAngularFrontend");
 
+//SWAGGER
 app.UseSwagger();
 app.UseSwaggerUI(c=>
 {
@@ -120,7 +122,10 @@ app.UseSwaggerUI(c=>
     c.InjectStylesheet("https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.1/themes/3.x/theme-newspaper.min.css");
 });
 
+//CONTROLLERS
 app.MapControllers();
+
+//RESPONSE CACHE
 app.UseResponseCaching();
 
 app.Run();

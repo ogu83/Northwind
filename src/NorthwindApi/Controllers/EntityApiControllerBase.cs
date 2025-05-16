@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi.Models;
 using NorthwindApi.Services;
@@ -50,14 +51,16 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     /// </summary>
     /// <param name="skip">Skip element count for paging</param>
     /// <param name="take">Take element count for paging</param>
+    /// <param name="orderBy">Order By</param>
+    /// <param name="isAscending">Order By Direction true for ascending, false for descending</param>
     /// <returns>All Elements</returns>
     /// <response code="200">Returns all elements</response>
     /// <response code="404">If there is no elements</response>
-    [HttpGet("skip/{skip}/take/{take}")]
+    [HttpGet("skip/{skip}/take/{take}/orderby/{orderBy}/asc/{isAscending}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
-    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take)
+    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending)
     {
         var start = DateTime.UtcNow;
         _logger.LogDebug("{0} | {1} Get called with skip:{2},take:{3}",
@@ -65,7 +68,20 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
             _className,
             skip, take);
 
-        var retVal = await _service.GetPagedListAsync(skip, take);
+        PagedList<T> retVal = null;
+        try
+        {
+            retVal = await _service.GetPagedListAsync(skip, take, orderBy, isAscending);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "ArgumentException on GetPagedListAsync");
+            return NotFound();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
 
         _logger.LogDebug("{0} | {1} Get Completed in {2}, Result: {3}",
             DateTime.UtcNow.ToLongTimeString(),
@@ -124,7 +140,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
             start.ToLongTimeString(),
             _className,
             JsonSerializer.Serialize(obj));
-        
+
         var retVal = await _service.Update(obj);
 
         _logger.LogDebug("{0} | {1} Put Completed in {2}, Result: {3}",
@@ -182,7 +198,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
             id);
 
         await _service.Delete(id);
-        
+
         _logger.LogDebug("{0} | {1} Delete Completed in {2}",
             DateTime.UtcNow.ToLongTimeString(),
             _className,

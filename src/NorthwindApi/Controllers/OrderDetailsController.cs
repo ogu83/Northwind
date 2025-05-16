@@ -25,7 +25,7 @@ public class OrderDetailsController(IOrderDetailService service, ILoggerFactory 
     [HttpGet("{orderID}/{productId}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async new Task<ActionResult<OrderDetail>> Get(int orderID, int productId)
+    public async Task<ActionResult<OrderDetail>> Get(int orderID, int productId)
     {
         var retVal = await _orderDetailsService.GetById(new Tuple<int, int>(orderID, productId));
         if (retVal == null)

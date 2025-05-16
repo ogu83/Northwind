@@ -10,7 +10,6 @@ public abstract class ApiControllerBase : ControllerBase
 
     protected ApiControllerBase(ILoggerFactory loggerFactory)
     {
-        // this.GetType() is the concrete controller type at runtime
         _logger = loggerFactory.CreateLogger(GetType().FullName!);
     }
 }
