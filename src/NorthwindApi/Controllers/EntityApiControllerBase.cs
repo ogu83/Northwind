@@ -68,7 +68,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
             _className,
             skip, take);
 
-        PagedList<T> retVal = null;
+        PagedList<T>? retVal = null;
         try
         {
             retVal = await _service.GetPagedListAsync(skip, take, orderBy, isAscending);
