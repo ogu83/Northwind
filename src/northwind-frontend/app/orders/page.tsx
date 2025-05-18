@@ -60,8 +60,9 @@ export default function Orders() {
     }
   };
 
-  const handleOrderBy = () => {
-    setIsAscending(!isAscending);
+  const handleOrderBy = (orderby: string) => {
+    if (orderBy === orderby) setIsAscending(!isAscending);
+    else setOrderBy(orderby);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -86,15 +87,39 @@ export default function Orders() {
         <thead>
           <tr className="border-b">
             <th className="text-center p-2">
-              ID |
               <button
                 className="border rounded p-1 cursor-pointer"
-                onClick={() => handleOrderBy()}
+                onClick={() => handleOrderBy("orderId")}
               >
-                {isAscending ? <>&uarr;</> : <>&darr;</>}
+                ID
+                {orderBy == "orderId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
               </button>
             </th>
-            <th className="text-left p-2">Customer Id</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("customerId")}
+              >
+                Customer Id
+                {orderBy == "customerId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Employee Id</th>
             <th className="text-left p-2">Order Date</th>
             <th className="text-left p-2">Required Date</th>
