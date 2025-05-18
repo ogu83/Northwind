@@ -8,9 +8,9 @@ using NorthwindApi.Services;
 using Serilog;
 using Serilog.Events;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateLogger();
+// Log.Logger = new LoggerConfiguration()
+//     .WriteTo.Console()
+//     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
