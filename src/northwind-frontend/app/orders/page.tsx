@@ -9,17 +9,21 @@ export default function Orders() {
   const queryClient = useQueryClient();
 
   // pagination state
-  const [pageIndex, setPageIndex] = useState(1);      // 1-based
-  const [pageSize, setPageSize] = useState(10);       // items per page
-  const pageSizes = [5, 10, 15, 20, 30, 50, 100]
-  
+  const [pageIndex, setPageIndex] = useState(1); // 1-based
+  const [pageSize, setPageSize] = useState(10); // items per page
+  const pageSizes = [5, 10, 15, 20, 30, 50, 100];
+
+  // order state
+  const [orderBy, setOrderBy] = useState("orderId");
+  const [isAscending, setIsAscending] = useState(true);
+
   // Fetch paged orders
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["orders", pageIndex, pageSize],
+    queryKey: ["orders", pageIndex, pageSize, orderBy, isAscending],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -29,9 +33,11 @@ export default function Orders() {
         pageCount: number;
         pageIndex: number;
         isLastPage: boolean;
-      }>(`http://localhost:5205/Order/skip/${skip}/take/${take}`);
+      }>(
+        `http://localhost:5205/Order/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+      );
       return res.data;
-    }
+    },
   });
 
   // Delete mutation
@@ -54,24 +60,40 @@ export default function Orders() {
     }
   };
 
+  const handleOrderBy = () => {
+    setIsAscending(!isAscending);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading orders</div>;
 
   const { items: orders, isLastPage } = paged!;
   const totalCount = paged!.totalCount;
-  const pageCount  = Math.ceil(totalCount / pageSize);
+  const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="p-4">
-        <h1 className="text-xl font-semibold mb-4">Orders</h1>
-        <div className="flex items-stretch mb-4">
-            <Link className="text-blue-500 px-5 cursor-pointer" href="/">Home</Link>
-            <Link className="text-blue-500 px-5 cursor-pointer" href="/orders/add">Add New</Link>
-        </div>
+      <h1 className="text-xl font-semibold mb-4">Orders</h1>
+      <div className="flex items-stretch mb-4">
+        <Link className="text-blue-500 px-5 cursor-pointer" href="/">
+          Home
+        </Link>
+        <Link className="text-blue-500 px-5 cursor-pointer" href="/orders/add">
+          Add New
+        </Link>
+      </div>
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
+            <th className="text-center p-2">
+              ID |
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy()}
+              >
+                {isAscending ? <>&uarr;</> : <>&darr;</>}
+              </button>
+            </th>
             <th className="text-left p-2">Customer Id</th>
             <th className="text-left p-2">Employee Id</th>
             <th className="text-left p-2">Order Date</th>
@@ -93,12 +115,23 @@ export default function Orders() {
             <tr key={order.orderId} className="border-b hover:bg-orange-950">
               <td className="p-1">{order.orderId}</td>
               <td className="p-1">
-                <Link href={`/customers/edit/${order.customerId}`} className="text-blue-500">{order.customerId}</Link>
+                <Link
+                  href={`/customers/edit/${order.customerId}`}
+                  className="text-blue-500"
+                >
+                  {order.customerId}
+                </Link>
               </td>
               <td className="p-1">{order.employeeId}</td>
-              <td className="p-1">{new Date(order.orderDate).toLocaleDateString()}</td>
-              <td className="p-1">{new Date(order.requiredDate).toLocaleDateString()}</td>
-              <td className="p-1">{new Date(order.shippedDate).toLocaleDateString()}</td>
+              <td className="p-1">
+                {new Date(order.orderDate).toLocaleDateString()}
+              </td>
+              <td className="p-1">
+                {new Date(order.requiredDate).toLocaleDateString()}
+              </td>
+              <td className="p-1">
+                {new Date(order.shippedDate).toLocaleDateString()}
+              </td>
               <td className="p-1">{order.shipVia}</td>
               <td className="p-1">{order.freight}</td>
               <td className="p-1">{order.shipName}</td>
@@ -108,7 +141,10 @@ export default function Orders() {
               <td className="p-1">{order.shipPostalCode}</td>
               <td className="p-1">{order.shipCountry}</td>
               <td className="p-1">
-                <Link href={`/orders/edit/${order.orderId}`} className="text-blue-500 p-1">
+                <Link
+                  href={`/orders/edit/${order.orderId}`}
+                  className="text-blue-500 p-1"
+                >
                   Edit
                 </Link>
                 <button
@@ -117,7 +153,7 @@ export default function Orders() {
                 >
                   Delete
                 </button>
-            </td>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -125,10 +161,11 @@ export default function Orders() {
 
       {/* Pagination controls */}
       <div className="flex flex-wrap gap-2 items-center m-2">
-
         {/* Page size selector */}
         <div className="flex items-center items-center">
-          <label htmlFor="pageSize" className="mr-1 w-20">Page Size</label>
+          <label htmlFor="pageSize" className="mr-1 w-20">
+            Page Size
+          </label>
           <select
             id="pageSize"
             value={pageSize}
@@ -161,7 +198,9 @@ export default function Orders() {
             <button
               key={page}
               onClick={() => setPageIndex(page)}
-              className={`px-2 border rounded ${page === pageIndex ? "bg-blue-700" : ""}`}
+              className={`px-2 border rounded ${
+                page === pageIndex ? "bg-blue-700" : ""
+              }`}
             >
               {page}
             </button>
