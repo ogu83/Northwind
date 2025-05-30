@@ -18,8 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSerilog((services, lc) => lc
     .ReadFrom.Configuration(builder.Configuration)
     .ReadFrom.Services(services)
-    .Enrich.FromLogContext()
-    .WriteTo.Console());
+    .Enrich.FromLogContext());
 // builder.Logging.ClearProviders();
 // builder.Logging.AddConsole(); 
 
