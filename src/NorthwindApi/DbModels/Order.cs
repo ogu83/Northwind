@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NorthwindApi.Providers;
 
 namespace NorthwindApi.DbModels;
 
@@ -21,16 +22,22 @@ public partial class Order
 
     public decimal? Freight { get; set; }
 
+    [Filterable]
     public string? ShipName { get; set; }
 
+    [Filterable]
     public string? ShipAddress { get; set; }
 
+    [Filterable]
     public string? ShipCity { get; set; }
 
+    [Filterable]
     public string? ShipRegion { get; set; }
 
+    [Filterable]
     public string? ShipPostalCode { get; set; }
 
+    [Filterable]
     public string? ShipCountry { get; set; }
 
     public virtual Customer? Customer { get; set; }

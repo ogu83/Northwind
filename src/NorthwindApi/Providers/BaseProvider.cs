@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using NorthwindApi.DbModels;
 
@@ -18,7 +17,14 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
 
     protected virtual IQueryable<T> Query() => _context.Set<T>();
 
-    public virtual Task<int> GetTotalCount() => Query().CountAsync();
+    public virtual Task<int> GetTotalCount(string filter = "")
+    {
+        var q = Query();
+        var entityType = _context.Model.FindEntityType(typeof(T))!;
+        var properties = entityType.GetProperties();
+        q = FilterQuery(filter, q, properties);
+        return q.CountAsync();
+    }
 
     public virtual Task<List<T>> GetListAsync() => Query().ToListAsync();
 
@@ -28,22 +34,19 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
     public virtual Task<List<T>> GetListAsync(int skip, int take, string orderBy, bool isAscending)
         => GetValues(skip, take, orderBy, isAscending).ToListAsync();
 
-    public virtual IQueryable<T> GetValues(int skip, int take, string orderBy = "", bool isAscending = true, Expression<Func<T, bool>>? filter = null)
+    public virtual Task<List<T>> GetListAsync(int skip, int take, string orderBy, bool isAscending, string filter)
+        => GetValues(skip, take, orderBy, isAscending, filter).ToListAsync();
+
+    public virtual IQueryable<T> GetValues(int skip, int take, string orderBy = "", bool isAscending = true, string filter = "")
     {
         var q = Query();
-
-        if (filter != null)
-        {
-            q = q.Where(filter);
-        }
+        var entityType = _context.Model.FindEntityType(typeof(T))!;
+        var properties = entityType.GetProperties();
+        q = FilterQuery(filter, q, properties);
 
         if (!string.IsNullOrEmpty(orderBy))
         {
-            var entityType = _context.Model.FindEntityType(typeof(T))!;
-            var prop = entityType
-              .GetProperties()
-              .FirstOrDefault(p =>
-                p.Name.Equals(orderBy, StringComparison.OrdinalIgnoreCase));
+            var prop = properties.FirstOrDefault(p => p.Name.Equals(orderBy, StringComparison.OrdinalIgnoreCase));
             var colType = prop?.GetColumnType()?.ToLowerInvariant();
             if (colType is not ("text" or "ntext" or "image"))
             {
@@ -56,6 +59,33 @@ public abstract class BaseProvider<T, IDT>(InstnwndContext context)
         }
 
         return q.Skip(skip).Take(take);
+    }
+
+    private static IQueryable<T> FilterQuery(string filter, IQueryable<T> q, IEnumerable<Microsoft.EntityFrameworkCore.Metadata.IProperty> properties)
+    {
+        filter = filter.Trim();
+        if (filter != "")
+        {
+            IQueryable<T>? qc = null;
+            foreach (var property in properties)
+            {
+                var propertyName = property.Name;
+                if (property.PropertyInfo is null) continue;
+
+                var filterableAttribute = property.PropertyInfo.GetCustomAttributes(typeof(FilterableAttribute), false).FirstOrDefault();
+                if (filterableAttribute is not null)
+                {
+                    if (qc is null)
+                        qc = q.Contains(propertyName, filter);
+                    else
+                        qc = qc.Union(q.Contains(propertyName, filter));
+                }
+            }
+
+            q = qc ?? q;
+        }
+
+        return q;
     }
 
     public virtual Task<T?> GetByIdAsync(IDT id) => FindAsync(id);

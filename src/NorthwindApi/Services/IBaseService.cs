@@ -11,7 +11,7 @@ public interface IBaseService<T, IDT>
     where T : BaseModel
 {
     Task<List<T>> GetListAsync();
-    Task<PagedList<T>> GetPagedListAsync(int skip, int take, string orderBy, bool isAscending);
+    Task<PagedList<T>> GetPagedListAsync(int skip, int take, string orderBy, bool isAscending, string filter = "");
     Task<T> GetById(IDT id);
     Task<T> Update(T obj);
     Task<T> Add(T obj);

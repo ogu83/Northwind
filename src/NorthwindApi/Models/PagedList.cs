@@ -12,9 +12,9 @@ public class PagedList<T> : BaseModel where T: BaseModel
 
     public int EndIndex => StartIndex + ItemCount;
 
-    public int PageCount => TotalCount / ItemCount;
+    public int PageCount => ItemCount == 0 ? 0 : TotalCount / ItemCount;
 
-    public int PageIndex => StartIndex / ItemCount;
+    public int PageIndex => ItemCount == 0 ? 0 : StartIndex / ItemCount;
 
     public bool IsLastPage => EndIndex >= TotalCount;
 }

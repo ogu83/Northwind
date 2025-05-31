@@ -11,7 +11,8 @@ public interface IBaseProvider<T, IDT>
     Task<List<T>> GetListAsync();
     Task<List<T>> GetListAsync(int skip, int take);
     Task<List<T>> GetListAsync(int skip, int take, string orderBy, bool isAscending);
-    Task<int> GetTotalCount();
+    Task<List<T>> GetListAsync(int skip, int take, string orderBy, bool isAscending, string filter);
+    Task<int> GetTotalCount(string filter = "");
     Task<T> AddAsync(T entity);
     Task<T> AddAndSaveAsync(T entity);
     T Update(T entity);
