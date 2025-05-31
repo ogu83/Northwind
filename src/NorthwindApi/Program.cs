@@ -8,10 +8,6 @@ using NorthwindApi.Services;
 using Serilog;
 using Serilog.Events;
 
-// Log.Logger = new LoggerConfiguration()
-//     .WriteTo.Console()
-//     .CreateLogger();
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Logging
@@ -19,8 +15,6 @@ builder.Services.AddSerilog((services, lc) => lc
     .ReadFrom.Configuration(builder.Configuration)
     .ReadFrom.Services(services)
     .Enrich.FromLogContext());
-// builder.Logging.ClearProviders();
-// builder.Logging.AddConsole(); 
 
 // Configure EF Core with SQL Server
 builder.Services.AddDbContext<InstnwndContext>(options =>
@@ -80,7 +74,7 @@ builder.Services.AddTransient<IOrderDetailService, OrderDetailService>();
 builder.Services.AddTransient<ISupplierService, SupplierService>();
 
 //Response Cache
-// builder.Services.AddResponseCaching();
+builder.Services.AddResponseCaching();
 
 //Build the app
 var app = builder.Build();

@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindApi.Models;
 using NorthwindApi.Services;
@@ -60,7 +59,24 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
-    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending)
+    public Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending) => Get(skip, take, orderBy, isAscending, "");
+
+    /// <summary>
+    /// Get List
+    /// </summary>
+    /// <param name="skip">Skip element count for paging</param>
+    /// <param name="take">Take element count for paging</param>
+    /// <param name="orderBy">Order By</param>
+    /// <param name="isAscending">Order By Direction true for ascending, false for descending</param>
+    /// <param name="filter">Filter string</param>
+    /// <returns>All Elements</returns>
+    /// <response code="200">Returns all elements</response>
+    /// <response code="404">If there is no elements</response>
+    [HttpGet("skip/{skip}/take/{take}/orderby/{orderBy}/asc/{isAscending}/filter/{filter}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
+    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending, string filter)
     {
         var start = DateTime.UtcNow;
         _logger.LogDebug("{0} | {1} Get called with skip:{2},take:{3}",
@@ -71,7 +87,7 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
         PagedList<T>? retVal = null;
         try
         {
-            retVal = await _service.GetPagedListAsync(skip, take, orderBy, isAscending);
+            retVal = await _service.GetPagedListAsync(skip, take, orderBy, isAscending, filter);
         }
         catch (ArgumentException ex)
         {

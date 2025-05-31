@@ -20,11 +20,11 @@ public abstract class BaseService<T, DBT, IDT>(IMapper mapper, IBaseProvider<DBT
         return retVal;
     }
 
-    public async Task<PagedList<T>> GetPagedListAsync(int skip, int take, string orderBy, bool isAscending)
+    public async Task<PagedList<T>> GetPagedListAsync(int skip, int take, string orderBy, bool isAscending, string filter = "")
     {
-        var dbObj = await _provider.GetListAsync(skip, take, orderBy, isAscending);
+        var dbObj = await _provider.GetListAsync(skip, take, orderBy, isAscending, filter);
         var items = _mapper.Map<List<T>>(dbObj);
-        var totalCount = await _provider.GetTotalCount();
+        var totalCount = await _provider.GetTotalCount(filter);
         var retval = new PagedList<T>
         {
             Items = items,

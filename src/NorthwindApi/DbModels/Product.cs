@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using NorthwindApi.Providers;
 
 namespace NorthwindApi.DbModels;
 
@@ -7,6 +8,7 @@ public partial class Product
 {
     public int ProductId { get; set; }
 
+    [Filterable]
     public string ProductName { get; set; } = null!;
 
     public int? SupplierId { get; set; }
