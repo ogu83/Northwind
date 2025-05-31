@@ -72,11 +72,11 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
     /// <returns>All Elements</returns>
     /// <response code="200">Returns all elements</response>
     /// <response code="404">If there is no elements</response>
-    [HttpGet("skip/{skip}/take/{take}/orderby/{orderBy}/asc/{isAscending}/filter/{filter}")]
+    [HttpGet("skip/{skip}/take/{take}/orderby/{orderBy}/asc/{isAscending}/filter/{filter?}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ResponseCache(VaryByHeader = "User-Agent", Duration = 60)]
-    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending, string filter)
+    public async Task<ActionResult<PagedList<T>>> Get(int skip, int take, string orderBy, bool isAscending, string filter = "")
     {
         var start = DateTime.UtcNow;
         _logger.LogDebug("{0} | {1} Get called with skip:{2},take:{3}",
@@ -105,10 +105,10 @@ public abstract class EntityApiControllerBase<T, S, IDT>(S service, ILoggerFacto
             (DateTime.UtcNow - start).TotalSeconds,
             JsonSerializer.Serialize(retVal));
 
-        if (retVal.ItemCount > 0)
+        // if (retVal.ItemCount > 0)
             return new ActionResult<PagedList<T>>(retVal);
-        else
-            return new NotFoundResult();
+        // else
+        //     return new NotFoundResult();
     }
 
     /// <summary>
