@@ -121,9 +121,57 @@ export default function Orders() {
               </button>
             </th>
             <th className="text-left p-2">Employee Id</th>
-            <th className="text-left p-2">Order Date</th>
-            <th className="text-left p-2">Required Date</th>
-            <th className="text-left p-2">Shipped Date</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("orderDate")}
+              >
+                Order Date
+                {orderBy == "orderDate" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("requiredDate")}
+              >
+                Required Date
+                {orderBy == "requiredDate" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("shippedDate")}
+              >
+                Shipped Date
+                {orderBy == "shippedDate" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Ship Via</th>
             <th className="text-left p-2">Freight</th>
             <th className="text-left p-2">Ship Name</th>

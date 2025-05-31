@@ -12,13 +12,17 @@ export default function Products() {
   const [pageSize, setPageSize] = useState(10); // items per page
   const pageSizes = [5, 10, 15, 20, 30, 50, 100];
 
+  // order state
+  const [orderBy, setOrderBy] = useState("productId");
+  const [isAscending, setIsAscending] = useState(true);
+
   // Fetch products
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["products", pageIndex, pageSize],
+    queryKey: ["products", pageIndex, pageSize, orderBy, isAscending],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -28,7 +32,9 @@ export default function Products() {
         pageCount: number;
         pageIndex: number;
         isLastPage: boolean;
-      }>(`http://localhost:5205/Product/skip/${skip}/take/${take}`);
+      }>(
+        `http://localhost:5205/Product/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+      );
       return res.data;
     },
   });
@@ -51,6 +57,11 @@ export default function Products() {
     if (confirm(`Are you sure you want to delete product ${id}?`)) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handleOrderBy = (orderby: string) => {
+    if (orderBy === orderby) setIsAscending(!isAscending);
+    else setOrderBy(orderby);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -77,8 +88,40 @@ export default function Products() {
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
-            <th className="text-left p-2">Name</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("productId")}
+              >
+                ID
+                {orderBy == "productId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("productName")}
+              >
+                Product Name
+                {orderBy == "productName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Supplier Id</th>
             <th className="text-left p-2">Category Id</th>
             <th className="text-left p-2">Quantity Per Unit</th>

@@ -13,13 +13,17 @@ export default function Categories() {
   const [pageSize, setPageSize] = useState(10); // items per page
   const pageSizes = [5, 10, 15, 20, 30, 50, 100];
 
+  // order state
+  const [orderBy, setOrderBy] = useState("categoryId");
+  const [isAscending, setIsAscending] = useState(true);
+
   // Fetch categories
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["categories", pageIndex, pageSize],
+    queryKey: ["categories", pageIndex, pageSize, orderBy, isAscending],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -29,7 +33,9 @@ export default function Categories() {
         pageCount: number;
         pageIndex: number;
         isLastPage: boolean;
-      }>(`http://localhost:5205/Category/skip/${skip}/take/${take}`);
+      }>(
+        `http://localhost:5205/Category/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+      );
       return res.data;
     },
   });
@@ -52,6 +58,11 @@ export default function Categories() {
     if (confirm(`Are you sure you want to delete category ${id}?`)) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handleOrderBy = (orderby: string) => {
+    if (orderBy === orderby) setIsAscending(!isAscending);
+    else setOrderBy(orderby);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -78,8 +89,40 @@ export default function Categories() {
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
-            <th className="text-left p-2">Name</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("categoryId")}
+              >
+                ID
+                {orderBy == "categoryId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("categoryName")}
+              >
+                Name
+                {orderBy == "categoryName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Description</th>
             <th className="text-left p-2">Actions</th>
           </tr>

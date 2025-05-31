@@ -8,9 +8,13 @@ import Link from "next/link";
 export default function Customers() {
   const queryClient = useQueryClient();
   // pagination state
-  const [pageIndex, setPageIndex] = useState(1);      // 1-based
-  const [pageSize, setPageSize] = useState(10);       // items per page
-  const pageSizes = [5, 10, 15, 20, 30, 50, 100]
+  const [pageIndex, setPageIndex] = useState(1); // 1-based
+  const [pageSize, setPageSize] = useState(10); // items per page
+  const pageSizes = [5, 10, 15, 20, 30, 50, 100];
+
+  // order state
+  const [orderBy, setOrderBy] = useState("customerId");
+  const [isAscending, setIsAscending] = useState(true);
 
   // Fetch customers
   const {
@@ -18,7 +22,7 @@ export default function Customers() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["orders", pageIndex, pageSize],
+    queryKey: ["customers", pageIndex, pageSize, orderBy, isAscending],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -28,9 +32,11 @@ export default function Customers() {
         pageCount: number;
         pageIndex: number;
         isLastPage: boolean;
-      }>(`http://localhost:5205/Customer/skip/${skip}/take/${take}`);
+      }>(
+        `http://localhost:5205/Customer/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+      );
       return res.data;
-    }
+    },
   });
 
   // Delete mutation
@@ -53,32 +59,188 @@ export default function Customers() {
     }
   };
 
+  const handleOrderBy = (orderby: string) => {
+    if (orderBy === orderby) setIsAscending(!isAscending);
+    else setOrderBy(orderby);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading customers</div>;
 
   const { items: customers, isLastPage } = paged!;
   const totalCount = paged!.totalCount;
-  const pageCount  = Math.ceil(totalCount / pageSize);
+  const pageCount = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="p-4">
-        <h1 className="text-xl font-semibold mb-4">Customers</h1>
-        <div className="flex items-stretch mb-4">
-            <Link className="text-blue-500 px-5 cursor-pointer" href="/">Home</Link>
-            <Link className="text-blue-500 px-5 cursor-pointer" href="/customers/add">Add New</Link>
-        </div>
+      <h1 className="text-xl font-semibold mb-4">Customers</h1>
+      <div className="flex items-stretch mb-4">
+        <Link className="text-blue-500 px-5 cursor-pointer" href="/">
+          Home
+        </Link>
+        <Link
+          className="text-blue-500 px-5 cursor-pointer"
+          href="/customers/add"
+        >
+          Add New
+        </Link>
+      </div>
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
-            <th className="text-left p-2">Company Name</th>
-            <th className="text-left p-2">Contact Name</th>
-            <th className="text-left p-2">Contact Title</th>
-            <th className="text-left p-2">Address</th>
-            <th className="text-left p-2">City</th>
-            <th className="text-left p-2">Region</th>
-            <th className="text-left p-2">Postal Code</th>
-            <th className="text-left p-2">Country</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("customerId")}
+              >
+                ID
+                {orderBy == "customerId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("companyName")}
+              >
+                Company Name
+                {orderBy == "companyName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("contactName")}
+              >
+                Contact Name
+                {orderBy == "contactName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("contactTitle")}
+              >
+                Contact Title
+                {orderBy == "contactTitle" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("address")}
+              >
+                Address
+                {orderBy == "address" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("city")}
+              >
+                City
+                {orderBy == "city" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("region")}
+              >
+                Region
+                {orderBy == "region" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("postalCode")}
+              >
+                Postal Code
+                {orderBy == "postalCode" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("country")}
+              >
+                Country
+                {orderBy == "country" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Phone</th>
             <th className="text-left p-2">Fax</th>
             <th className="text-left p-2">Actions</th>
@@ -86,7 +248,10 @@ export default function Customers() {
         </thead>
         <tbody>
           {customers.map((customer) => (
-            <tr key={customer.customerId} className="border-b hover:bg-orange-950">
+            <tr
+              key={customer.customerId}
+              className="border-b hover:bg-orange-950"
+            >
               <td className="p-1">{customer.customerId}</td>
               <td className="p-1">{customer.companyName}</td>
               <td className="p-1">{customer.contactName}</td>
@@ -99,7 +264,10 @@ export default function Customers() {
               <td className="p-1">{customer.phone}</td>
               <td className="p-1">{customer.fax}</td>
               <td className="p-1">
-                <Link href={`/customers/edit/${customer.customerId}`} className="text-blue-500 p-1">
+                <Link
+                  href={`/customers/edit/${customer.customerId}`}
+                  className="text-blue-500 p-1"
+                >
                   Edit
                 </Link>
                 <button
@@ -110,22 +278,23 @@ export default function Customers() {
                 </button>
                 <Link
                   className="text-blue-500 p-1 cursor-pointer"
-                  href={`/orders/customer/${customer.customerId}`} 
+                  href={`/orders/customer/${customer.customerId}`}
                 >
                   Orders
                 </Link>
-            </td>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      
+
       {/* Pagination controls */}
       <div className="flex flex-wrap gap-2 items-center m-2">
-
         {/* Page size selector */}
         <div className="flex items-center items-center">
-          <label htmlFor="pageSize" className="mr-1 w-20">Page Size</label>
+          <label htmlFor="pageSize" className="mr-1 w-20">
+            Page Size
+          </label>
           <select
             id="pageSize"
             value={pageSize}
@@ -158,7 +327,9 @@ export default function Customers() {
             <button
               key={page}
               onClick={() => setPageIndex(page)}
-              className={`px-2 border rounded ${page === pageIndex ? "bg-blue-700" : ""}`}
+              className={`px-2 border rounded ${
+                page === pageIndex ? "bg-blue-700" : ""
+              }`}
             >
               {page}
             </button>

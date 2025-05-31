@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function Suppliers() {
-
   function renderHomePageLink(raw: string | null) {
     if (!raw) {
       return <span className="text-gray-500">—</span>;
@@ -44,13 +43,17 @@ export default function Suppliers() {
   const [pageSize, setPageSize] = useState(10); // items per page
   const pageSizes = [5, 10, 15, 20, 30, 50, 100];
 
+  // order state
+  const [orderBy, setOrderBy] = useState("supplierId");
+  const [isAscending, setIsAscending] = useState(true);
+
   // Fetch suppliers
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["suppliers", pageIndex, pageSize],
+    queryKey: ["suppliers", pageIndex, pageSize, orderBy, isAscending],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -60,7 +63,9 @@ export default function Suppliers() {
         pageCount: number;
         pageIndex: number;
         isLastPage: boolean;
-      }>(`http://localhost:5205/Supplier/skip/${skip}/take/${take}`);
+      }>(
+        `http://localhost:5205/Supplier/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+      );
       return res.data;
     },
   });
@@ -83,6 +88,11 @@ export default function Suppliers() {
     if (confirm(`Are you sure you want to delete supplier ${id}?`)) {
       deleteMutation.mutate(id);
     }
+  };
+
+  const handleOrderBy = (orderby: string) => {
+    if (orderBy === orderby) setIsAscending(!isAscending);
+    else setOrderBy(orderby);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -109,15 +119,159 @@ export default function Suppliers() {
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b">
-            <th className="text-left p-2">ID</th>
-            <th className="text-left p-2">Company Name</th>
-            <th className="text-left p-2">Contact Name</th>
-            <th className="text-left p-2">Contact Title</th>
-            <th className="text-left p-2">Address</th>
-            <th className="text-left p-2">City</th>
-            <th className="text-left p-2">Region</th>
-            <th className="text-left p-2">Postal Code</th>
-            <th className="text-left p-2">Country</th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("supplierId")}
+              >
+                ID
+                {orderBy == "supplierId" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("companyName")}
+              >
+                Company Name
+                {orderBy == "companyName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("contactName")}
+              >
+                Contact Name
+                {orderBy == "contactName" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("contactTitle")}
+              >
+                Contact Title
+                {orderBy == "contactTitle" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("address")}
+              >
+                Address
+                {orderBy == "address" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("city")}
+              >
+                City
+                {orderBy == "city" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("region")}
+              >
+                Region
+                {orderBy == "region" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("postalCode")}
+              >
+                Postal Code
+                {orderBy == "postalCode" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
+            <th className="text-left p-2">
+              <button
+                className="border rounded p-1 cursor-pointer"
+                onClick={() => handleOrderBy("country")}
+              >
+                Country
+                {orderBy == "country" ? (
+                  isAscending ? (
+                    <>&uarr;</>
+                  ) : (
+                    <>&darr;</>
+                  )
+                ) : (
+                  ""
+                )}
+              </button>
+            </th>
             <th className="text-left p-2">Phone</th>
             <th className="text-left p-2">Fax</th>
             <th className="text-left p-2">Home Page</th>
