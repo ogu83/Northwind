@@ -20,7 +20,6 @@ export default function Categories() {
   // filter state
   const [filter, setFilter] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     inputRef.current?.focus();
   });

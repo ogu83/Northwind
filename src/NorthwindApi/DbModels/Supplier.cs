@@ -11,34 +11,34 @@ public partial class Supplier
     [Filterable]
     public string CompanyName { get; set; } = null!;
 
-    [Filterable]
+    // [Filterable]
     public string? ContactName { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? ContactTitle { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? Address { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? City { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? Region { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? PostalCode { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? Country { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? Phone { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? Fax { get; set; }
 
-    [Filterable]
+    // [Filterable]
     public string? HomePage { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
