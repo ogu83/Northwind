@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Orders() {
   const queryClient = useQueryClient();
@@ -17,13 +17,20 @@ export default function Orders() {
   const [orderBy, setOrderBy] = useState("orderId");
   const [isAscending, setIsAscending] = useState(true);
 
+  // filter state
+  const [filter, setFilter] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+  });
+
   // Fetch paged orders
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["orders", pageIndex, pageSize, orderBy, isAscending],
+    queryKey: ["orders", pageIndex, pageSize, orderBy, isAscending, filter],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -34,7 +41,9 @@ export default function Orders() {
         pageIndex: number;
         isLastPage: boolean;
       }>(
-        `http://localhost:5205/Order/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+        `http://localhost:5205/Order/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}/filter/${encodeURIComponent(
+          filter
+        )}`
       );
       return res.data;
     },
@@ -82,6 +91,22 @@ export default function Orders() {
         <Link className="text-blue-500 px-5 cursor-pointer" href="/orders/add">
           Add New
         </Link>
+        <div className="flex items-center ml-auto">
+          <label htmlFor="filter" className="mr-1 w-20">
+            Filter
+          </label>
+          <input
+            ref={inputRef}
+            id="filter"
+            type="text"
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setPageIndex(1); // reset to first page on filter change
+            }}
+            className="border px-1"
+          />
+        </div>
       </div>
       <table className="table-auto w-full">
         <thead>

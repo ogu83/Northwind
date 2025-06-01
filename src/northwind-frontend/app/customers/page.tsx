@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
 
@@ -16,13 +16,20 @@ export default function Customers() {
   const [orderBy, setOrderBy] = useState("customerId");
   const [isAscending, setIsAscending] = useState(true);
 
+  // filter state
+  const [filter, setFilter] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+  });
+
   // Fetch customers
   const {
     data: paged,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["customers", pageIndex, pageSize, orderBy, isAscending],
+    queryKey: ["customers", pageIndex, pageSize, orderBy, isAscending, filter],
     queryFn: async () => {
       const skip = (pageIndex - 1) * pageSize;
       const take = pageSize;
@@ -33,7 +40,9 @@ export default function Customers() {
         pageIndex: number;
         isLastPage: boolean;
       }>(
-        `http://localhost:5205/Customer/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}`
+        `http://localhost:5205/Customer/skip/${skip}/take/${take}/orderby/${orderBy}/asc/${isAscending}/filter/${encodeURIComponent(
+          filter
+        )}`
       );
       return res.data;
     },
@@ -84,6 +93,22 @@ export default function Customers() {
         >
           Add New
         </Link>
+        <div className="flex items-center ml-auto">
+          <label htmlFor="filter" className="mr-1 w-20">
+            Filter
+          </label>
+          <input
+            ref={inputRef}
+            id="filter"
+            type="text"
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setPageIndex(1); // reset to first page on filter change
+            }}
+            className="border px-1"
+          />
+        </div>
       </div>
       <table className="table-auto w-full">
         <thead>
