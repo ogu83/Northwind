@@ -133,3 +133,75 @@ It will run in local: http://localhost:5206/
   }
 ```
 
+## Northwind MCP SERVER
+
+### Run in terminal
+
+```powershell
+cd ./src/NorthwindMcpServer
+dotnet run
+```
+
+### VS Code Debug Options:
+It will run in local: http://localhost:5207/
+
+**tasks.json:**
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/NorthwindMcpServer.csproj"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
+```
+
+**launch.json**
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/bin/Debug/net9.0/NorthwindMcpServer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "launchSettingsProfile": "http",
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ]
+}
+```
+VSCode Copilot
+**mcp.json**
+```json
+{
+    "servers": {
+        "Northwind-http-mcp-server": {
+            "url": "http://localhost:5207/"
+        }
+    }
+}
+```
