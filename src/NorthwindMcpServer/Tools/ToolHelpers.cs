@@ -32,12 +32,13 @@ public static class ToolHelpers
         int skip,
         int take,
         string orderBy,
+        bool isAscending,
         string? filter,
         CancellationToken cancellationToken) where T : BaseModel
     {
         try
         {
-            var doc = await httpClient.ReadJsonDocumentAsync($"/{entityPath}/skip/{skip}/take/{take}/orderBy/{orderBy}/filter/{Uri.EscapeDataString(filter ?? string.Empty)}");
+            var doc = await httpClient.ReadJsonDocumentAsync($"/{entityPath}/skip/{skip}/take/{take}/orderBy/{orderBy}/asc/{isAscending}/filter/{Uri.EscapeDataString(filter ?? string.Empty)}");
             var items = doc.RootElement.Deserialize<PagedList<T>>(options);
             return items;
         }
@@ -48,11 +49,11 @@ public static class ToolHelpers
         }
     }
 
-    public static async ValueTask<T?> GetById<T>(
+    public static async ValueTask<T?> GetById<T,IDT>(
         HttpClient httpClient,
         string entityPath,
         JsonSerializerOptions options,
-        int id,
+        IDT id,
         CancellationToken cancellationToken) where T : BaseModel
     {
         try
