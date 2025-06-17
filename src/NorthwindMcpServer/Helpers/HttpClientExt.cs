@@ -1,5 +1,7 @@
 using System.Text.Json;
 
+namespace NorthwindMcpServer.Helpers;
+
 internal static class HttpClientExt
 {
     public static async Task<JsonDocument> ReadJsonDocumentAsync(this HttpClient client, string requestUri)

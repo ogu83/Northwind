@@ -1,16 +1,20 @@
-// using Microsoft.Extensions.AI;
-using Microsoft.Extensions.AI;
-using ModelContextProtocol.Server;
-using System.ComponentModel;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.AddConsole(consoleLogOptions =>
-{
-    // Configure all logs to go to stderr
-    consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
-});
+// Logging
+builder.Services.AddSerilog();
+// builder.Logging.AddConsole(consoleLogOptions =>
+// {
+//     // Configure all logs to go to stderr
+//     consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
+// });
+builder.Services.AddSerilog((services, lc) => lc
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext());
 
+// HttpClient for MCP server tools
 builder.Services.AddSingleton(_ =>
 {
     var client = new HttpClient() { BaseAddress = new Uri("http://localhost:5205") };
@@ -22,7 +26,7 @@ builder.Services
     .WithHttpTransport()
     .WithToolsFromAssembly();
     
-
 var app = builder.Build();
+
 app.MapMcp();
 app.Run();
