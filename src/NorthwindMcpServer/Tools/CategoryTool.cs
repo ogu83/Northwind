@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using ModelContextProtocol.Server;
 using NorthwindApi.Models;
 

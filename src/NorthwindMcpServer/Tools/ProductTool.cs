@@ -29,13 +29,13 @@ public static class ProductTool
     => ToolHelpers.GetAll<Product>(httpClient, $"{entity}/Category/{id}", JsonSerializerOptions, cancellationToken);
 
     [McpServerTool, Description($"Gets all the {entityPlural} from the API and return back to the client as List of {entity}.")]
-    public static ValueTask<List<Product>> GetAll_Orders(
+    public static ValueTask<List<Product>> GetAll_Products(
         HttpClient httpClient,
         CancellationToken cancellationToken)
     => ToolHelpers.GetAll<Product>(httpClient, entity, JsonSerializerOptions, cancellationToken);
 
     [McpServerTool, Description($"Gets the paginated {entityPlural} from the API and return back to the client as PagedList of {entity}.")]
-    public static ValueTask<PagedList<Product>?> GetPaged_Orders(
+    public static ValueTask<PagedList<Product>?> GetPaged_Products(
         HttpClient httpClient,
         [Description($"The number of {entityPlural} to skip for pagination.")] int skip,
         [Description($"The number of {entityPlural} to take for pagination.")] int take,
