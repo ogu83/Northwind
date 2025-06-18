@@ -12,11 +12,7 @@ public static class OrderTool
     private const string entity = "order";
     private const string entityPlural = "orders";
 
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
+    private static JsonSerializerOptions JsonSerializerOptions => ToolHelpers.JsonSerializerOptions;
 
     [McpServerTool, Description($"Gets all the {entityPlural} from the API for a given customer and return back to the client as List of {entity}.")]
     public static ValueTask<List<Order>> GetAll_Orders_ByCustomer(

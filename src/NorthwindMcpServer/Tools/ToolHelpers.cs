@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using NorthwindApi.Models;
 using NorthwindMcpServer.Helpers;
 
@@ -6,6 +7,12 @@ namespace NorthwindMcpServer.Tools;
 
 public static class ToolHelpers
 {
+    public static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     public static async ValueTask<List<T>> GetAll<T>(
         HttpClient httpClient,
         string entityPath,
@@ -49,7 +56,7 @@ public static class ToolHelpers
         }
     }
 
-    public static async ValueTask<T?> GetById<T,IDT>(
+    public static async ValueTask<T?> GetById<T, IDT>(
         HttpClient httpClient,
         string entityPath,
         JsonSerializerOptions options,
@@ -58,7 +65,10 @@ public static class ToolHelpers
     {
         try
         {
-            var doc = await httpClient.ReadJsonDocumentAsync($"/{entityPath}/{id}");
+            var idString = id is Tuple<int, int> tupleId
+                ? $"{tupleId.Item1}/{tupleId.Item2}"
+                : id?.ToString();
+            var doc = await httpClient.ReadJsonDocumentAsync($"/{entityPath}/{idString}");
             var e = doc.RootElement.Deserialize<T>(options);
             return e;
         }

@@ -12,11 +12,7 @@ public static class CategoryTool
     private const string entity = "category";
     private const string entityPlural = "categories";
 
-    private static readonly JsonSerializerOptions JsonSerializerOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
+    private static JsonSerializerOptions JsonSerializerOptions => ToolHelpers.JsonSerializerOptions;
 
     [McpServerTool, Description($"Gets all the {entityPlural} from the API and return back to the client as List of {entity}.")]
     public static ValueTask<List<Category>> GetAll_Categories(
