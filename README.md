@@ -135,6 +135,10 @@ It will run in local: http://localhost:5206/
 
 ## Northwind MCP SERVER
 
+### Architecture
+
+![IMAGE ALT TEXT HERE](docs/NorthwindMCPArchitecture.png)
+
 ### Run in terminal
 
 ```powershell
