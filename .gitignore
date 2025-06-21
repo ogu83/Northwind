@@ -371,3 +371,5 @@ FodyWeavers.xsd
 /src/Userware.XamlDesigner.Admin.Web/ConnectionStrings.Debug.config
 /src/Userware.EmbeddedDesigner.TestApp.Browser/wwwroot/OpenSilverXamlIO.zip
 /src/Userware.XR.TestApp.Browser/wwwroot/XRSharpPlayground.zip
+
+*.info.json
