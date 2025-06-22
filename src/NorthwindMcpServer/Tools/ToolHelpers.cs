@@ -114,16 +114,19 @@ public static class ToolHelpers
             throw;
         }
     }
-    
-    public static async ValueTask Delete(
+
+    public static async ValueTask Delete<IDT>(
         HttpClient httpClient,
         string entityPath,
-        int id,
+        IDT id,
         CancellationToken cancellationToken)
     {
         try
         {
-            var response = await httpClient.DeleteAsync($"/{entityPath}?id={id}", cancellationToken);
+            var idString = id is Tuple<int, int> tupleId
+                ? $"{tupleId.Item1}/{tupleId.Item2}"
+                : id?.ToString();
+            var response = await httpClient.DeleteAsync($"/{entityPath}?id={idString}", cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)

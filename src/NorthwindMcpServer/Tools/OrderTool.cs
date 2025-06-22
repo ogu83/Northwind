@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using ModelContextProtocol.Server;
 using NorthwindApi.Models;
 
@@ -17,7 +16,7 @@ public static class OrderTool
     [McpServerTool, Description($"Gets all the {entityPlural} from the API for a given customer and return back to the client as List of {entity}.")]
     public static ValueTask<List<Order>> GetAll_Orders_ByCustomer(
         HttpClient httpClient,
-        [Description($"id of the customer")] int id,
+        [Description($"id of the customer")] string id,
         CancellationToken cancellationToken)
     => ToolHelpers.GetAll<Order>(httpClient, $"{entity}/Customer/{id}", JsonSerializerOptions, cancellationToken);
 
