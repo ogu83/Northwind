@@ -1,9 +1,6 @@
-
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
-using System.Linq;
 
 namespace NorthwindAgentApi.Controllers;
 
@@ -109,14 +106,11 @@ public class ChatController : ApiControllerBase
             if (item.Contents.FirstOrDefault(c => c is FunctionCallContent) is FunctionCallContent functionCallContent)
             {
                 allFunctionCalls.Add(functionCallContent);
-                // Console.ForegroundColor = ConsoleColor.Magenta;
                 _logger.LogInformation($"Function call found: {functionCallContent.Name} (Collecting, not executing yet)");
             }
             else
             {
                 // Regular text content
-                // Console.ForegroundColor = ConsoleColor.Cyan;
-                // Console.Write(item.Text);
                 currentResponse += item.Text;
             }
 
@@ -161,22 +155,18 @@ public class ChatController : ApiControllerBase
                             .Where(c => c.Type == "text")
                             .Select(c => c.Text));
 
-                    Console.ForegroundColor = ConsoleColor.Green;
                     _logger.LogInformation($"Tool response: {toolResponseText}");
 
                     // Do NOT add to chat history yet
                     _logger.LogInformation($"Tool response from {functionCallContent.Name} will be returned to the user directly");
-
                     // Append tool response to final response
-                    finalResponse += $"\n\n**Results from {functionCallContent.Name}:**\n{toolResponseText}";
+                    // finalResponse += $"\n\n**Results from {functionCallContent.Name}:**\n{toolResponseText}";
                 }
                 catch (Exception ex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
                     _logger.LogError($"Error executing tool {functionCallContent.Name}: {ex.Message}");
-
                     // Append error to final response
-                    finalResponse += $"\n\n**Error from {functionCallContent.Name}:**\n{ex.Message}";
+                    // finalResponse += $"\n\n**Error from {functionCallContent.Name}:**\n{ex.Message}";
                 }
             }
         }
@@ -199,7 +189,9 @@ public class ChatController : ApiControllerBase
 
     private static string TruncateString(string input, int maxLength)
     {
-        if (string.IsNullOrEmpty(input)) return string.Empty;
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
         return input.Length <= maxLength ? input : string.Concat(input.AsSpan(0, maxLength), "...");
     }
 
@@ -212,12 +204,9 @@ public class ChatController : ApiControllerBase
             _logger.LogInformation($"TotalTokenCount: {usage.TotalTokenCount}");
 
             if (usage.AdditionalCounts != null)
-            {
                 foreach (var additionalCount in usage.AdditionalCounts)
-                {
                     _logger.LogInformation($"{additionalCount.Key}: {additionalCount.Value}");
-                }
-            }
+
         }
     }
 }
