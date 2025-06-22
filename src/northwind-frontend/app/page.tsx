@@ -35,6 +35,12 @@ export default function Home() {
         >
           Orders
         </Link>
+        <Link
+          href="/chat"
+          className="block w-full text-center bg-green-500 font-semibold text-white rounded p-3 cursor-pointer"
+        >
+          Chat with MCP Agent
+        </Link>
       </div>
     </div>
   );
